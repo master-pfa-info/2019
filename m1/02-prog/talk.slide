@@ -1,0 +1,323 @@
+Introduction to (imperative) programming
+Master 1
+
+Sebastien Binet
+CNRS/IN2P3/LPC-Clermont
+sebastien.binet@clermont.in2p3.fr
+
+* Getting started
+
+* Getting started
+
+Computer programming is the art, craft and science of writing programs which define how computers operate.
+
+We'll see how to write computer programs using a programming language designed by Google, named [[https://golang.org][Go]].
+
+* Programming languages
+
+Programming languages provide an *abstraction* from a computer's instruction set architecture
+
+*Low-level* *programming* *languages* provide little or no abstraction, _e.g._ machine code and assembly language.
+
+- Difficult to use
+- Allows to program efficiently and with a low memory footprint
+
+*High-level* *programming* *languages* isolate the executions semantics of a computer architecture from the specification of the program: this simplifies program development
+
+* 
+
+Machine code:
+
+ 8B542408 83FA0077 06B80000 0000C383
+ C9010000 008D0419 83FA0376 078BD98B
+ B84AEBF1 5BC3
+
+Assembly:
+
+ MOVQ 0x10(SP), AX	
+ MOVQ 0x8(SP), CX	
+ ADDQ CX, AX		
+ MOVQ AX, 0x18(SP)	
+ RET			
+
+High-level language:
+
+ func add(a, b int) int {
+     return a+b
+ }
+
+* Principal programming paradigms
+
+- imperative, procedural
+- functional
+- object oriented
+- concurrent
+- logic
+- scripting
+
+* Imperative programming ?
+
+What does "imperative programming" mean ?
+
+In the English language, an imperative is an instruction or command:
+"Take me to your leader!"
+
+.image _figs/take-me-to-your-leader.jpg 200 _
+
+Similarly, in imperative programming, we use a *sequence* *of* *statements* (or "commands") to give _instructions_ to the computer.
+
+* Elements of programming languages
+
+Programming languages have many similarities with natural languages:
+
+- rules for syntax, semantics
+- many different dialects
+
+* Compiled vs. Interpreted languages
+
+*Compiled* languages are translated into machine code that can be run directly on a computer's processor: the whole program is translated before it's run.
+
+*Interpreted* languages are processed by a higher-level virtual machine: the program is translated on the fly (_i.e._ a statement is translated and then immediately executed.)
+
+.image _figs/compiled-interpreted.png 350 _
+
+* Go
+
+[[https://golang.org][Go]] is a compiled programming language: source code is translated into a language that the computer can understand.
+
+So, before we can write a Go program, we need a Go compiler.
+
+We can get one from:
+
+.link https://golang.org/dl
+
+This should have already been done for the machines we are using.
+
+ $> go version
+ go version go1.9 linux/amd64
+
+The `go` program is made up of several different commands and sub-commands.
+A list of those commands is available by typing:
+
+ $> go help
+
+* First program: hello world
+
+Create a directory `hello` under `~/go/src`:
+
+ $> cd
+ $> mkdir -p ~/go/src/hello
+ $> cd ~/go/src/hello
+
+And then, create a new file `~/go/src/hello/main.go` with the following content:
+
+.play _code/hello.go
+
+We can then use `go` `run` to compile and execute this file:
+
+ $> go run ./main.go
+ hello world
+
+* Go builtins
+
+In high-level languages such as `C`, `C++`, `python` or `Go`, we don't deal directly with raw `bytes` to interact with the underlying machine code: we have abstractions.
+
+This includes `types`.
+In Go, we have *builtin* *types*, such as:
+
+- `bool`: a type whose values are either `true` or `false`
+- `int`: a signed integer (_e.g.:_ `0`, `-10`, `+10`, `42`, `666`)
+- `uint`: an unsigned integer (_e.g.:_ `0`, `10`, `666`, ...)
+- `float32`: a floating-point value encoded on 32 bits (_e.g.:_ `0.1`, `1e10`, `42.6`)
+- `float64`: a floating-point value encoded on 64 bits (_e.g.:_ `0.1`, `1e10`, `42.6`)
+- `string`: a chain of characters (_e.g.:_ `"hello"`, `"you"`, `"世界"`)
+- `complex64`, `complex128`: a complex number (_e.g.:_ `1.0` `+` `2.0i`)
+
+* 
+
+Create a new program:
+
+  $> mkdir -p ~/go/src/builtins
+  $> cd ~/go/src/builtins
+  $> nano main.go
+
+You can start from:
+
+.code _code/builtins-start.go
+
+Eventually, the program shall display:
+
+  $> go run ./main.go
+  str= hello
+  int= -42
+  uint= 666
+  f64= +2.500000e-001
+  bool= true / false
+
+* 
+
+.play _code/builtins.go
+
+* Variables
+
+So far, we have printed values using "value literals".
+
+That's not a technique that could _scale_ to very big programs: imagine if you had to write a program that computes the sum of all integers from `0` to `10000` and thus had to _literally_ write the sum `0+1+2` `...` `+10000`.
+Pretty boring pretty quickly.
+
+In most programming languages, we can store values inside entities, give them a name (or an identifier) and refer to them to recall their value.
+
+In [[https://golang.org][Go]], that's done with the *keyword* `var`:
+
+ var name string
+ var age int
+ var speed float64
+
+The code above *declares* 3 variables, `name`, `age` and `speed` with the types (respectively), `string`, `int` and `float64` and values `""`, `0` and `0.0` (respectively.)
+
+* 
+
+Declaring a variable is thus:
+
+ var [variable-name] [variable-type]
+
+One can also initialize that variable with a default value:
+
+ var name string = "electron"
+ var charge int = -1
+ var mass float64 = 0.511
+
+Or, group many declarations in one "block":
+
+ var (
+     name   string  = "electron"
+     charge int     = -1
+     mass   float64 = 0.511
+ )
+
+* 
+
+In [[https://golang.org][Go]], one can also let the compiler infer the type of a variable from the value we initialize it with:
+
+ var (
+     name   = "electron"
+     charge = -1
+     mass   = 0.511
+ )
+ var ok = false
+
+`name` has type `string`, `charge` is an `int`, `mass` is still a `float64` and `ok` is a `bool`.
+
+[[https://golang.org][Go]]'s inference type system can go even further:
+
+ name := "electron"
+ charge := -1
+ mass := 0.511
+ ok := false
+
+* 
+
+Create a new program `add/main.go`:
+
+ $> mkdir -p ~/go/src/add
+ $> cd ~/go/src/add
+ $> nano main.go
+
+Starting like so:
+
+.code _code/add-start.go
+
+Declare and initialize 2 variables `a` and `b`, of type `int` and with values `10` and `11` (resp.)
+Print their sum.
+
+Eventually, the program shall display:
+
+ $> go run ./main.go
+ a+b= 21
+
+* 
+
+.play _code/add.go
+
+* Functions
+
+One of the pillars of imperative programming is the concept of a *function*.
+Functions allow to encapsulate a piece of algorithmic code, clearly defining the set of input data that it needs to operate and the output result of that piece of computation.
+
+This piece of algorithmic code, cleanly encapsulated, can then be reused in other programs, by calling the function.
+
+Let's revisit the `add` example:
+
+.code _code/add.go
+
+We could imagine wanting to encapsulate this addition of `a+b` and make it available for other programs.
+
+* 
+
+In [[https://golang.org][Go]], declaring and defining a function is done like this:
+
+ func add(a int, b int) int {
+     return a+b
+ }
+
+We use the keyword *func* to tell the compiler we are defining a new function, then comes the name of the function we are defining, the list of input parameters and their types, and finally, the type of the returned value.
+Then comes the body of the function, its implementation.
+
+ func [function-name]([input-params]) [output] { [body] }
+
+* 
+
+So the `add` example from earlier can be re-written like so:
+
+.play _code/add-func.go
+
+* 
+
+Modify the `add` example from earlier and add the following functions:
+
+- `mul`: takes 2 integers and returns their product
+- `div`: takes 2 integers and returns their division
+
+Modify `main` to display:
+
+- `add(a,b)`
+- `mul(a,b)`
+- `div(a,b)`
+- `mul(mul(a,b),div(a,b))`
+
+Try different values of `a` and `b`:
+
+- `a=10`, `b=11`
+- `a=10`, `b=5`
+- `a=10`, `b=0`
+
+Anything peculiar?
+
+* 
+
+Modify the previous program and define the following functions: `fadd`, `fmul` and `fdiv`.
+They should do the same than their `add`, `mul` and `div` counter-parts (except they operate on `float64` values.)
+
+Modify `main` to define 2 new `float64` variables `x` and `y` and to display:
+
+- `fadd(x,y)`
+- `fmul(x,y)`
+- `fdiv(x,y)`
+- `fmul(fmul(x,y),fdiv(x,y))`
+
+Try different values of `x` and `y`:
+
+- `x=10.0`, `y=11.0`
+- `x=10.0`, `y=5.0`
+- `x=10.0`, `y=0.0`
+
+* 
+
+* Resources
+
+.link https://golang-book.com
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp01_intro.pdf
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp02_oo.pdf
+.link https://tour.golang.org
+.link https://www.golangbootcamp.com/book
+

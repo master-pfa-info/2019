@@ -313,6 +313,633 @@ Try different values of `x` and `y`:
 
 * 
 
+Modify the previous program to define a new function `fma` (fused multiply-add) that takes 3 `float64` arguments and returns `x*y+z`.
+Except that you should implement it using `fmul` and `fadd`.
+
+Display the result of `fma(x,y,2.0)`.
+
+* Arrays and Slices
+
+So far we've seen how to declare and use variables of builtin types (`int`, `float64`, ...)
+
+But in real life, we usually have to deal with variables of more than just one value: a collection of values (of the same type.)
+
+_E.g.:_ a collection of energy deposits in a calorimeter, a collection of hits positions in a tracker, the list of names of a students' class, etc...
+
+In [[https://golang.org][Go]], collections of items come in two flavours:
+
+- static arrays: arrays whose number of elements are known and *fixed* at compile time
+- dynamic arrays: arrays whose number of elements are not known beforehand and can be resized at run time.
+
+* Arrays
+
+Arrays in Go are static arrays.
+Their size is fixed and can not be neither extended nor shrunk.
+
+ var a [10]int
+ var b [1]float64
+ var c = [3]int{1, 2, 3}
+ d := [3]int{10, 20, 30}
+ e := [...]int{10, 20, 30}
+
+One can access the first element of an array `arr` with:
+
+ arr := [10]int{0, 2, 4, 6, 8, 10, 12, 14, 16, 18}
+ e1 := arr[0] // first element. value==0
+
+One can also use the builtin function `len` to retrieve the size of an array:
+
+ size := len(arr) // here, size==10
+
+So to access the last element of an array:
+
+ e10 := arr[len(arr)-1] // value==18
+
+* 
+
+Write a new program, in `~/go/src/arr/main.go`, that creates an array of 3 unsized integers, from 10 to 12.
+Print each element of the array and then modify the element at index 1 to the new value 42.
+Re-print each element of the array.
+
+The program shall print:
+
+ arr[0]= 10
+ arr[1]= 11
+ arr[2]= 12
+ arr[0]= 10
+ arr[1]= 42
+ arr[2]= 12
+
+* Slices
+
+Slices in Go are dynamic arrays.
+Their size is not necessarily known at compile time and can change during the execution of the program.
+
+ var a []float64             // a slice with 0 element
+ var b = []int{1, 2, 3}      // a slice with 3 elements
+ c := []int{10, 20, 30}      // a slice with 3 elements
+ var d = make([]float64, 10) // a slice with 10 elements (all zeros)
+ e := make([]float64, 10)    // a slice with 10 elements (all zeros)
+
+`make` is a builtin function of [[https://golang.org][Go]] that allocates the needed memory to hold the requested number of elements of the given type:
+
+ slice := make([]T, nelemts)
+
+* 
+
+Element access and modification are performed the same as for arrays:
+
+ a := []int{0, 2, 4, 6, 8, 10, 12, 14, 16, 18}
+ e1 := a[0] // first element. value == 0
+ size := len(a) // ==10
+ a[1] = 42
+
+To add a new element at the end of a slice:
+
+ a = append(a, 20)
+ size = len(a) // ==11
+ a = append(a, 22, 24)
+ size = len(a) // ==13
+
+* 
+
+One can also sub-slice a slice (take a sub-sample of the original slice):
+
+ a := []int{1, 2, 3, 4, 5}
+ b := a[1:3]           // == {2, 3}
+ c := a[0:2]           // == {1, 2}
+ d := a[:3]            // == {1, 2, 3}
+ e := a[1:]            // == {2, 3, 4, 5}
+ f := a[:]             // == {1, 2, 3, 4, 5}
+
+*NOTE:* a slice and its sub-slice *share* the same underlying backing array:
+
+ a := []int{1, 2, 3, 4}
+ b := a[1:3]  // == {2, 3}
+ b[0] = 3
+ println(b[0], b[1])       // 3 3
+ println(a[0], a[1], a[2]) // 1 3 3
+
+* 
+
+Write a new program, in `~/go/src/sli/main.go`, that creates an empty slice of `float64` and then appends 3 new values: `1.2`, `3.4` and `5.6`.
+Print the 3 values, increase `sli[2]` by `1` and reprint the values.
+
+The program shall display:
+
+  sli[0]= +1.200000e+000
+  sli[1]= +3.400000e+000
+  sli[2]= +5.600000e+000
+  sli[0]= +1.200000e+000
+  sli[1]= +3.400000e+000
+  sli[2]= +6.600000e+000
+
+What does happen if you try to access `sli[3]` ?
+
+* Control flow structures
+
+So far our programs have been pretty boring and linear.
+They were a very straightforward list of instructions, that the CPU would execute one after the other.
+Very predictable. Very linear.
+
+But in real life, we usually want our programs to do different things depending on the value(s) of some variable(s).
+
+This is achieved with an `if`-statement.
+
+ if len(array) > 10 {
+   println("array is big")
+
+ } else if len(array) == 1 {
+   println("array length is just one")
+ 
+ } else {
+   println("array is rather small")
+ }
+
+* 
+
+.play _code/if-else.go
+
+* Control flow structures
+
+Another useful control flow structure is the `for`-loop:
+
+ for i := 0; i < 10; i++ {
+     println("i=", i)
+ }
+
+or, the version iterating on a slice:
+
+ vs := []int{0, 2, 4, 6, 8}
+ for i := range vs {
+     println("i=", i, "==>", vs[i])
+ }
+
+or:
+
+ vs := []int{0, 2, 4, 6, 8}
+ for i, v := range vs {
+     println("i=", i, "==>", v)
+ }
+
+* 
+
+.play _code/for-loops.go
+
+* 
+
+Write a new program, in `~/go/src/for-loop/main.go`, that will define a function `squares` that:
+
+- takes an integer `n` as input
+- returns a slice of length `n` and content the squares of the index
+
+Create another function `sum` that takes a slice of integers and returns the sum of all the elements of the input slice.
+
+Edit `main` so that it calls `sum` for all the integers from `0` to `20` (excluded) and prints both the argument of `sum` and the result of `sum`.
+
+* 
+
+Write a new program, in `~/go/src/sum-even/main.go`, that defines a function `sum` that:
+
+- takes a slice of integers as input
+- returns the sum of all the even elements from that input slice
+
+Edit `main` so that it calls `sum` for all the integers from `0` to `20` (excluded), generates a slice of integers from `0` to `i`, and prints the value of `i` and the result of `sum(slice)`.
+
+* Packages and functions
+
+So far, we've only seen how to create a single binary application/program.
+We compiled that one `main.go` file (through `go` `run`) and ran.
+
+Everything we needed for our `main` function was defined inside `main.go`.
+
+In real life, we'd rather:
+
+- create re-usable pieces of functionalities
+- group them by theme and package them as libraries (_a.k.a.:_ `"packages"` in Go)
+
+Then, people can `import` these libraries and the functions defined there in their own programs (or libraries.)
+
+The [[https://golang.org][Go]] programming language comes with a rather large set of packages, usually called the "standard library" (_a.k.a.:_ "stdlib".)
+
+* Standard library
+
+The documentation for [[https://golang.org][Go]]'s standard library is available on:
+
+.link https://golang.org/pkg
+
+It's quite extensive.
+
+Let's inspect and use the `"math"` and `"fmt"` package:
+
+.link https://golang.org/pkg/math
+.link https://golang.org/pkg/fmt
+
+* 
+
+.play _code/stdlib-pkg.go
+
+* Package
+
+Let's create our first package.
+
+Create a new file `~/go/src/uca.fr/ints/ints.go` with the following content:
+
+.code _code/ints-pkg.go
+
+* 
+
+Now, create a new program in `~/go/src/sum-2/main.go`, and edit `main` such that:
+
+- it creates a slice of `20` elements, calling `ints.Gen(20)`,
+- it prints its content
+- it prints the result of calling `ints.Sum(slice)`, using the `"fmt"` package from the standard library.
+
+_NB:_ importing our `"ints"` package is done like so:
+
+ import "uca.fr/ints"
+
+* 
+
+As a simple way to play with functions and loops, implement the square root function using Newton's method.
+
+In this case, Newton's method is to approximate Sqrt(x) by picking a starting point z and then repeating:
+
+.image _figs/newton.png
+
+To begin with, just repeat that calculation 10 times and see how close you get to the answer for various values (1, 2, 3, ...).
+
+Next, change the loop condition to stop once the value has stopped changing (or only changes by a very small delta).
+See if that's more or fewer iterations.
+How close are you to the `math.Sqrt`?
+
+* 
+
+.code _code/newton-start.go
+
+* Interlude: Monte Carlo simulations
+
+.link https://en.wikipedia.org/wiki/Monte_Carlo_method
+
+Monte Carlo methods are useful for simulating systems with many coupled degrees of freedom.
+In many HEP experiments, we use [[http://geant4.cern.ch/][GEANT]] to simulate the interactions of particules through detectors.
+`GEANT` simulates step-by-step the interactions of particules through matter and the energy deposits.
+
+The simulation of physics processes with GEANT is very detailed but, also, very CPU hungry.
+(That's why we usually run so called "fast simulation" programs, with a less detailed description of the physics processes.)
+
+Let's do that.
+
+* Introduction to Monte Carlo methods
+
+We'll first try to approximate Pi using the Monte-Carlo method.
+
+Consider a circle inscribed in a unit square.
+Given that the circle and the square have a ratio of areas that is π/4, the value of  π can be approximated using a Monte-Carlo method:
+
+- draw a square, inscribe a circle within it,
+- uniformly scatter objects of uniform size over the square,
+- count the number of objects inside the circle and the total number of objects,
+- the ratio of the inside-count and the total-sample-count is an *estimate* of the ratio of the two areas, which is π/4.
+
+Multiply the result by 4 to estimate π.
+
+
+* 
+
+Let's write a new program under `~/go/src/mc-pi/main.go`, starting with:
+
+.code _code/mc-pi-start.go
+
+* 
+
+Have a look at the documentation of `math/rand` (for drawing random numbers):
+
+.link https://golang.org/pkg/math/rand
+
+Then, try with different values for `n`:
+
+ $> go run ./main.go -n 10
+ $> go run ./main.go -n 1000
+ $> ...
+
+*
+
+Let's add some graphics:
+
+.link https://godoc.org/github.com/master-pfa-info/mcpi
+
+The `mcpi` package is a rather simple package that draws `(x,y)` points in the plane `((0,0), (1,1))`.
+
+
+* 
+
+Let's add some graphics and (limited) interactivity to our program.
+
+We'll use the [[https://godoc.org/github.com/master-pfa-info/mcpi][master-pfa-info/mcpi]] package to plot the `(x,y)` points inside our quarter of a circle.
+
+.link https://github.com/master-pfa-info/mcpi
+
+As the documentation in the link above says, we need to install that library, using the following command (in the shell):
+
+ $> go get github.com/master-pfa-info/mcpi
+
+* 
+
+Modify the previous program to plot the `(x,y)` points, using the `mcpi.Plot(x,y)` function:
+
+.code _code/mc-pi-plot-start.go
+
+* 
+
+.image _figs/mc-pi.png 600 _
+
+* Pointers & Structs
+
+* Pointers
+
+[[https://golang.org][Go]] supports one more builtin type: pointers.
+
+A pointer is a variable whose value contains the address of another variable:
+
+.play _code/ptr-0.go
+
+* 
+
+.play _code/func-no-ptr.go
+
+* Interlude: implementing a calculator
+
+* 
+
+Let's create a new program, `~/go/src/calc/main.go`.
+Our calculator will take numbers (integers) from the command line and will display their sum:
+
+  $> cd ~/go/src/calc
+  $> go build
+  $> ./calc 1 2 3 4 100
+  sum= 110
+
+So far, all our programs were nice little isolated islands: they working by themselves, displaying output informations with minimal to no interactions with the outside world.
+
+How can we somehow "connect" data from the outside with our program?
+
+One way is to pass information from the outside via the command line, when the program is invoked.
+
+* os.Args
+
+In [[https://golang.org][Go]], arguments given to the program when invoked are accessible via the `os.Args` slice of strings:
+
+ $> go doc os.Args
+ var Args []string
+     Args hold the command-line arguments, starting with the program name.
+
+Let's start with:
+.play _code/calc-01.go
+
+* 
+
+Try:
+
+ $> go build
+ $> ./calc
+ args: 1
+ args[0] = "./calc"
+
+ $> ./calc 1 2 foo 42.3 bar
+ args: 6
+ args[0] = "./calc"
+ args[1] = "1"
+ args[2] = "2"
+ args[3] = "foo"
+ args[4] = "42.3"
+ args[5] = "bar"
+
+* 
+
+Let's modify `main.go` to also print the argument type (with `"%T"`):
+
+.play _code/calc-02.go
+
+* 
+
+  $> ./calc 1 2 foo 42.3 bar
+  args: 6
+  args[0] = "./calc" (string)
+  args[1] = "1" (string)
+  args[2] = "2" (string)
+  args[3] = "foo" (string)
+  args[4] = "42.3" (string)
+  args[5] = "bar" (string)
+
+So for our calculator project, we need to somehow convert the strings to integers.
+
+In [[https://golang.org][Go]] this can be done with the [[https://golang.org/pkg/strconv][strconv]] package from the stdlib:
+
+  v, err := strconv.Atoi("42")
+  if err != nil {
+      panic(err)
+  }
+
+Don't fret about the `err` and the `panic` for now.
+We'll come back to this in the next chapter.
+
+* 
+
+So now, go write the calculator!
+
+It should behave like so:
+
+  $> cd ~/go/src/calc
+  $> go build
+  $> ./calc 1 2 3 4 100
+  sum= 110
+
+* 
+
+We know have a great tool at our disposal.
+But it's quite blunt:
+
+- no way to ask help and usage
+- no way to customize its behaviour (_e.g.:_ enable a verbose mode)
+
+We need a way to pass parameters, "flags", that can tweak the runtime behaviour of our great calculator, like we did with:
+
+ $> ls -l
+ $> ls -F
+ $> find . -type d
+
+In [[https://golang.org][Go]], this can be done with the [[https://golang.org/pkg/flag][flag]] package.
+
+* 
+
+A typical usage would look like:
+
+.code _code/flag-pkg.go
+
+* 
+
+ $> go build -o flag-ex ./flag-example.go
+ $> ./flag-ex
+ verbose=   false
+ pt-min=    25.000000
+ b-tag=     2
+ os.Args=   [./flag-ex]
+ flag.Args= []
+ 
+ $> ./flag-ex -btag 3 -v -pt-min=0.1 foo bar
+ verbose=   true
+ pt-min=    0.100000
+ b-tag=     3
+ os.Args=   [./flag-ex -btag 3 -v -pt-min=0.1 foo bar]
+ flag.Args= [foo bar]
+
+ $> ./flag-ex -h
+ Usage of ./flag-ex:
+   -btag int
+     	number of b-tag for H->bb analysis (default 2)
+   -pt-min float
+     	min Pt cut for H->bb analysis (default 25)
+   -v	enable verbose mode
+
+* 
+
+Now, modify our super calculator so that it accepts a `"-v"` flag that enables a verbose mode (and is false by default):
+
+ $> ./calc 1 2 3 4 100
+ sum= 110
+
+ $> ./calc -v 1 2 3 4 100
+ 0
+ + 1 -> 1
+ + 2 -> 3
+ + 3 -> 6
+ + 4 -> 10
+ + 100 -> 110
+ ===============
+ sum= 110
+
+
+* Structs
+
+* Interlude: Lorentz vectors
+
+* Lorentz vectors
+
+How would you create a library that would deal with Lorentz vectors ?
+
+* 
+
+Using 4 variables ?
+
+  var px, py, pz, e float64
+
+Then perhaps, the functions to compute the mass and add 2 4-vectors:
+
+  func mass(px, py, pz, e float64) float64 {
+      m2 := e*e - (px*px + py*py + pz*pz)
+      return math.Sqrt(m2)
+  }
+
+  func add(px1, py1, pz1, e1, px2, py2, pz2, e2 float64) (px, py, pz, e float64) {
+      return px1+px2, py1+py2, pz1+pz2, e1+e2
+  }
+
+But then you have to carry around those 4 `float64` everywhere together.
+
+* 
+
+What if you want to compute the invariant mass of 2 particles, say a `Z->bb` ?
+
+You need:
+
+  var b1px, b1py, b1pz, b1e float64 // b-jet #1
+  var b2px, b2py, b2pz, b2e float64 // b-jet #2
+
+and then:
+
+  zpx, zpy, zpz, ze := add(b1px, b2px, b1py, b2py, b1pz, b2pz, b1e, b2e) // OOPS. BUG.
+  invMass := mass(zpx, zpy, zpz, ze)
+
+
+* 
+
+Or perhaps using an array of 4 `float64` ?
+
+  var p4 [4]float64
+
+  func mass(p [4]float64) float64 {
+      m2 := p[3]*p[3] - (p[0]*p[0] + p[1]*p[1] + p[2]*p[2])
+      return math.Sqrt(m2)
+  }
+
+  func add(p1, p2 [4]float64) [4]float64 {
+      return [4]float64{p1[0]+p2[0], p1[1]+p2[1], p1[2]+p2[2], p1[3]+p2[3]}
+  }
+
+
+* 
+
+Our `Z->bb` example becomes:
+
+  var (
+     b1, b2 [4]float64
+
+     z       = add(b1, b2)
+     invMass = mass(z)
+  )
+
+But then, how do you make sure everybody is using the same convention ?
+
+  [4]float64 == {px, py, pz, ene}
+
+and not, _e.g.:_
+
+  [4]float64 == {ene, px,  py,  pz}
+  [4]float64 == {ene, eta, phi, mass}
+  [4]float64 == {pt,  eta, phi, mass}
+  ...
+
+We need a way to bundle multiple values together *and* still attach some meaning (or give context) to these values...
+
+* Structs
+
+In [[https://golang.org][Go]] (and other languages), this task can be addressed with a `struct`:
+
+  type P4 struct {
+      Px, Py, Pz, E float64
+  }
+
+  func mass(p P4) float64 {
+      m2 := p.E*p.E - (p.Px*p.Px + p.Py*p.Py + p.Pz*p.Pz)
+      return math.Sqrt(m2)
+  }
+
+  func add(p1, p2 P4) P4 {
+      return P4{p1.Px+p2.Px, p1.Py+p2.Py, p1.Pz+p2.Pz, p1.E+p2.E}
+  }
+
+* 
+
+Like for the other declarations, the new type declaration of a struct is:
+
+  type [[new-name]] struct { [[definition]] }
+
+Fields of a struct can be of different types:
+
+  type P4 struct { Px, Py, Pz, E float64 }
+  type RecoParticle struct {
+      Momentum P4          // reconstructed momentum of the particle
+      Charge   float64     // charge of the particle
+      AlgName  string      // algorithm that reconstructed the particle
+      PDGID    int         // Particle Data Group ID
+      McTruth  *McParticle // pointer to MonteCarlo truth (simu-only)
+  }
+
+A struct can also have no field:
+
+  type Empty struct {}
+
 * Resources
 
 .link https://golang-book.com

@@ -940,6 +940,144 @@ A struct can also have no field:
 
   type Empty struct {}
 
+* 
+
+Let's write a program that can handle planar geometry (_ie:_ 2D).
+
+Create a package (not a program), named `geo2d` under `~/go/src/uca.fr/geo2d/geo.go`.
+
+In that package, create 2 structs:
+
+- a structure named `Point` with 2 fields of type `float64` that will store the `X` and `Y` coordinates of the Point,
+- a structure named `Rect` with 3 fields: the `Orig` (the bottom-most, left-most corner of the rectangle), the `Width` and the `Height` of the rectangle.
+
+  +-----------+
+  |<--Width-->| ^
+  |           | Height
+  |           | v
+  +-----------+
+  Orig
+
+* 
+
+Implement:
+
+  // Translate returns a new Point translated by dx and dy
+  func Translate(pt Point, dx float64, dy float64) Point { ... }
+
+  // Area returns the area of the given rectangle
+  func Area(rect Rect) float64 { ... }
+  
+  // Perimeter returns the perimeter of the given rectangle
+  func Perimeter(rect Rect) float64 { ... }
+
+  // Contains returns whether the given rectangle contains the given point
+  func Contains(rect Rect, pt Point) bool { ... }
+
+  // Overlap returns whether 2 rectangles overlap
+  func Overlap(r1, r2 Rect) bool { ... }
+
+
+* 
+
+To test your package `geo2d` actually works, run the following program:
+
+.play _code/geo2d-test.go
+
+* I/O
+
+* Working with files
+
+Programming languages provide a way to:
+
+- create files,
+- open files for read-access,
+- open files for write-access,
+- iterate over the content of a file on disk (and possibly modify that content.)
+
+In [[https://golang.org][Go]], this is done (mostly) with the [[https://golang.org/pkg/os][os]] package.
+
+  f, err := os.Open("data.txt")
+  if err != nil {
+      panic(err)
+  }
+
+On the disk, a file is just a sequence of `bytes`.
+
+Quite naturally, [[https://golang.org][Go]] will represent this data (to be read from a file or written to a file) as a `[]byte`, a slice of `bytes`.
+
+
+* 
+
+Let's create a new program `~/go/src/create-file/main.go` with the following content:
+
+.code _code/create-file.go
+
+* 
+
+Running this program should give:
+
+ $> go run ./main.go
+ 
+ $> cat data.txt
+ hello world
+ 0 1 2 3 4 5
+ good bye
+
+* 
+
+Let's modify `~/go/src/create-file/main.go` like so:
+
+.code _code/create-file-floats.go
+
+* 
+
+Running this program should give:
+
+ $> go run ./main.go
+
+ $> head -n 4 data.txt
+ -1.233758177597947
+ -0.12634751070237293
+ -0.5209945711531503
+ 2.28571911769958
+
+ $> wc ./data.txt 
+  1000  1000 19671 ./data.txt
+
+
+Now create yet another program, `~/go/src/read-file/main.go` with the following content (see next slide.)
+
+* 
+
+.code _code/read-file-floats.go
+
+* 
+
+Copy the `data.txt` file created previously into the current directory.
+Running our new program should give:
+
+ $> go run ./main.go
+ mean= -0.013051
+
+* 
+
+Create a new program `~/go/src/write-2d-gauss/main.go`.
+It should create a new `data-2d-gauss.txt` file containing 2 columns of data.
+
+Each column should be a 1000-sample of (respectively):
+
+- a gaussian with mean 20 and standard deviation 5
+- a gaussian with mean 10 and standard deviation 20.
+
+Create another program `~/go/src/read-2d-gauss/main.go`, that will:
+
+- read the previously created `data-2d-gauss.txt` file,
+- store the data for each column in a dedicated slice of `float64`,
+- define 2 functions `mean` and `stddev` that take a `[]float64` slice as input and return (respectively) the mean and the standard deviation of the slice.
+
+Make sure you get the expected mean and stddev values for each sample.
+
 * Resources
 
 .link https://golang-book.com

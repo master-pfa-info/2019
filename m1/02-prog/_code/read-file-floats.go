@@ -21,4 +21,8 @@ func main() {
 		sum += v
 	}
 	fmt.Printf("mean= %f\n", sum/1000.0)
+
+	if err = f.Close(); err != nil {
+		panic(err)
+	}
 }

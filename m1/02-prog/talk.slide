@@ -1011,7 +1011,7 @@ Quite naturally, [[https://golang.org][Go]] will represent this data (to be read
 
 Let's create a new program `~/go/src/create-file/main.go` with the following content:
 
-.code _code/create-file.go
+.code _code/create-file.go HLxxx
 
 * 
 
@@ -1023,6 +1023,13 @@ Running this program should give:
  hello world
  0 1 2 3 4 5
  good bye
+
+Creating/opening a file, writing to the file, reading from the file and/or closing the file *MAY* fail for some reason (not enough disk space, corrupted filesystem, broken hard disk, no more network connection, etc...)
+
+That's why most of the function that deal with files return this extra `err` value (of type `error`.)
+
+We'll see in more details what an `error` type is in the chapter about `interfaces`.
+For now, remember to always `Close()` your files whenever you've opened them (for reading or writing), and always check whether that `error` value is not `nil`.
 
 * 
 
@@ -1062,6 +1069,57 @@ Running our new program should give:
 
 * 
 
+Hard-coding the number of times to loop over the lines in the input file isn't quite satisfactory.
+
+Let's try to fix that.
+In [[https://golang.org][Go]], there is a special type that can scan lines of a files and iteratively present each line as an API:
+
+  f, err := os.Open("some-file.txt")
+  if err != nil { panic(err) }
+  scan := bufio.NewScanner(f)  // need to import "bufio"
+
+  for scan.Scan() {
+    txt := scan.Text() // returns a string with the content of current line.
+    fmt.Printf("we've read line %q\n", txt)
+  }
+
+  if err = scan.Err(); err != nil { panic(err) }
+  if err = f.Close();  err != nil { panic(err) }
+
+.link https://golang.org/pkg/bufio#Scanner
+
+* 
+
+Wielding this new tool at our disposal, let's modify the previous program (`read-file/main.go`) to not hard-code the number of times/lines to loop over when reading the input file.
+
+In the previous version of that program, we used `fmt.Fscanf` to extract a `float64` out of the file.
+Now we need to extract a `float64` out of a line (which is a `string`.)
+
+We'll need to use a slightly different function to do that: `fmt.Sscanf`.
+
+.link https://golang.org/pkg/fmt#Sscanf
+
+ for scan.Scan() {
+     var f64 float64
+     var txt = scan.Text()
+     _, err = fmt.Sscanf(txt, "%f", &f64)
+     if err != nil { panic(err) }
+ }
+
+* 
+
+Make sure we still get the same answer when running the new version of the program:
+
+ $> go run ./main.go
+ mean= -0.013051
+
+
+* Solution
+
+.code _code/read-file-floats-bufio.go /^func main/,/^}/
+
+* 
+
 Create a new program `~/go/src/write-2d-gauss/main.go`.
 It should create a new `data-2d-gauss.txt` file containing 2 columns of data.
 
@@ -1077,6 +1135,214 @@ Create another program `~/go/src/read-2d-gauss/main.go`, that will:
 - define 2 functions `mean` and `stddev` that take a `[]float64` slice as input and return (respectively) the mean and the standard deviation of the slice.
 
 Make sure you get the expected mean and stddev values for each sample.
+
+* 
+
+Let's revisit our super calculator.
+
+Modify the calculator to be able to sum `float64` values (and not just `int` as previously.)
+
+Add 2 new flags:
+
+ var flagFile = flag.String("f", "", "path to a file holding values")
+ var flagStats = flag.Bool("stats", false, "enable computation+display of stats")
+
+Modify the calculator to be able to optionally take a path to a file (with `-f=my-file.txt`) and then take data from that file instead of from the command line like previously.
+
+Make sure that it still works as previously when no `-f` flag is passed (_ie:_ when `*flagFile==""`).
+
+Use a `bufio.Scanner` to read the (optional) input file.
+
+* 
+
+Modify the calculator to compute the mean and standard deviation of the input data when the `-stats` flag is passed to the program.
+When that flag is passed, the calculator should display the mean and std-dev of the sample at the end of the program.
+It should work for both modes (when `*flagFile==""` and when a path to a file is given to the program.)
+
+* Object Oriented Programming
+
+* Structs, Types & Methods
+
+Do you remember the Lorentz vectors we defined earlier ?
+
+  type P4 struct {
+      Px, Py, Pz, E float64
+  }
+
+  func mass(p P4) float64 {
+      m2 := p.E*p.E - (p.Px*p.Px + p.Py*p.Py + p.Pz*p.Pz)
+      return math.Sqrt(m2)
+  }
+
+  func add(p1, p2 P4) P4 {
+      return P4{p1.Px+p2.Px, p1.Py+p2.Py, p1.Pz+p2.Pz, p1.E+p2.E}
+  }
+
+* 
+
+Let's modify it a little bit:
+
+  type PxPyPzE struct {
+      px, py, pz, e float64
+  }
+
+  func mass(p PxPyPzE) float64 {
+      m2 := p.e*p.e - (p.px*p.px + p.py*p.py + p.pz*p.pz)
+      return math.Sqrt(m2)
+  }
+
+  func add(p1, p2 PxPyPzE) PxPyPzE {
+      return PxPyPzE{p1.px+p2.px, p1.py+p2.py, p1.pz+p2.pz, p1.e+p2.e}
+  }
+
+and add:
+
+  type PtEtaPhiM struct {
+      pt, eta, phi, m float64
+  }
+
+* 
+
+When we add another Lorentz vector type (with different components) we have a problem:
+
+- we can't call the `mass(...)` function on a `PtEtaPhiM` value as `add` expects a  `PxPyPzE`.
+
+We could define 2 functions:
+
+ func massPxPyPzE   (p PxPyPzE  ) float64 { ... }
+ func massPtEtaPhiM (p PtEtaPhiM) float64 { ... }
+
+But we can do better: define methods on each type `PxPyPzE` and `PtEtaPhiM`:
+
+ func (p PxPyPzE)   Mass() float64 { ... }
+ func (p PtEtaPhiM) Mass() float64 { ... }
+
+What did we gain here ?
+
+* 
+
+.play _code/hlv-main.go /^func main/,/^}/ HLxxx
+.play _code/hlv-main-meth.go /^func main/,/^}/ HLxxx
+
+* 
+
+We can also define a new method on the type `PxPyPzE`:
+
+.play _code/hlv-main-meth-stringer.go /^func \(p PxPyPzE\) String\(/,/^}/
+
+and then:
+
+.play _code/hlv-main-meth-stringer.go /^func main/,/^}/ HLxxx
+
+* 
+
+What did just happen ?
+
+The `fmt.Printf` function managed to call the method `String()` of our `PxPyPzE` value.
+When `fmt.Printf` was written (~10 years ago),
+
+- it didn't know a type like `PxPyPzE` would ever be written,
+- it didn't even know it would have a method with that name and signature!
+
+Yet, somehow it knew it had to call `String()` on our `z` value...
+
+Well... that's because `fmt.Printf` used an *interface* and because our `PxPyPzE` (implicitly) implemented it.
+
+* Interfaces
+
+An interface type is defined as a set of method signatures.
+
+A value of interface type can hold any value that implements those methods.
+
+  type Abser interface {
+      Abs() float64
+  }
+  
+  type Reader interface {
+      Read(data []byte) (int, error)
+  }
+
+
+_E.g.:_ the type `MyFloat` implements the `Abser` interface:
+
+  type MyFloat float64
+  
+  func (f MyFloat) Abs() float64 {
+  	if f < 0 {
+  		return float64(-f)
+  	}
+  	return float64(f)
+  }
+
+* Interfaces
+
+Modify the code below to make `MyFloat` and `Vertex` implement the `Abser` interface:
+
+.play _code/ex-interfaces.go /STARTABSER OMIT/,/ENDABSER OMIT/
+
+* Solution
+
+.play _code/ex-interfaces.go /STARTABSERIMPL OMIT/,/ENDABSERIMPL OMIT/
+
+* 
+
+Interfaces are useful to write code that can use code that hasn't been written yet.
+
+  func Selector(a Abser) bool {
+      if a.Abs() > 2.5 {
+          return true
+      }
+      return false
+  }
+
+  func do() {
+    Selector(MyFloat(42))    // this compiles.
+    Selector(&Vertex{1,2})   // this also compiles.
+    Selector(Vertex{1,2})    // but this does NOT compile.
+  }
+
+
+The `Selector` function can be used with values of types `MyFloat`, `Vertex` or any other type (possibly one written 15 years from now) that implements the `Abser` interface.
+
+And no need to modify nor adapt the `Selector` function to get it working with these new types, as long as they implement the `Abser` interface.
+
+It's a contract that binds the 2 parties (the interface and the type that implements that interface.)
+
+* 
+
+Let's revisit our `geo2d` package.
+
+We had defined 2 types: `Point` and `Rect`.
+
+Let's introduce 1 new type: `Circle`.
+
+Define 2 new interfaces:
+
+  type Surfer interface {
+      // Surf returns the surface of a 2D shape
+      Surf() float64
+  }
+
+  type Stringer interface {
+      // String returns a string reprensation of a value.
+      String() string
+  }
+
+* 
+
+Modify `geo2d` such that `Point`, `Rect` and `Circle` implement the `Stringer` interface.
+
+Modify `geo2d` such that `Rect` and `Circle` implement the `Surfer` interface.
+
+Finally, modify the `geo2d.Area` function to take a `Surfer` parameter instead of a `Rect`.
+Test that you can then pass both a value of type `Circle` and of type `Rect` to this new function `Area`.
+
+* 
+
+Interfaces are a very powerful abstraction.
+
+They are actually one of the building blocks of OO-programming in [[https://golang.org][Go]].
+
 
 * Resources
 

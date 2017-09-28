@@ -1114,10 +1114,6 @@ Make sure we still get the same answer when running the new version of the progr
  mean= -0.013051
 
 
-* Solution
-
-.code _code/read-file-floats-bufio.go /^func main/,/^}/
-
 * 
 
 Create a new program `~/go/src/write-2d-gauss/main.go`.
@@ -1279,10 +1275,6 @@ _E.g.:_ the type `MyFloat` implements the `Abser` interface:
 Modify the code below to make `MyFloat` and `Vertex` implement the `Abser` interface:
 
 .play _code/ex-interfaces.go /STARTABSER OMIT/,/ENDABSER OMIT/
-
-* Solution
-
-.play _code/ex-interfaces.go /STARTABSERIMPL OMIT/,/ENDABSERIMPL OMIT/
 
 * 
 

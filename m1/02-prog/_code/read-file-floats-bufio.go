@@ -14,7 +14,6 @@ func main() {
 
 	sum := 0.0
 	n := 0
-
 	scan := bufio.NewScanner(f)
 	for scan.Scan() {
 		var v float64
@@ -25,6 +24,9 @@ func main() {
 		}
 		sum += v
 		n++
+	}
+	if err = f.Close(); err != nil {
+		panic(err)
 	}
 	fmt.Printf("mean= %f\n", sum/float64(n))
 }

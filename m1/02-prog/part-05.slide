@@ -1,0 +1,363 @@
+Introduction to (imperative) programming - Part 5
+Master 1
+
+Sebastien Binet
+CNRS/IN2P3/LPC-Clermont
+sebastien.binet@clermont.in2p3.fr
+
+* Pointers & Structs
+
+* Pointers
+
+[[https://golang.org][Go]] supports one more builtin type: pointers.
+
+A pointer is a variable whose value contains the address of another variable:
+
+.play _code/ptr-0.go
+
+* 
+
+.play _code/func-no-ptr.go
+
+* Interlude: implementing a calculator
+
+* 
+
+Let's create a new program, `~/go/src/calc/main.go`.
+Our calculator will take numbers (integers) from the command line and will display their sum:
+
+  $> cd ~/go/src/calc
+  $> go build
+  $> ./calc 1 2 3 4 100
+  sum= 110
+
+So far, all our programs were nice little isolated islands: they working by themselves, displaying output informations with minimal to no interactions with the outside world.
+
+How can we somehow "connect" data from the outside with our program?
+
+One way is to pass information from the outside via the command line, when the program is invoked.
+
+* os.Args
+
+In [[https://golang.org][Go]], arguments given to the program when invoked are accessible via the `os.Args` slice of strings:
+
+ $> go doc os.Args
+ var Args []string
+     Args hold the command-line arguments, starting with the program name.
+
+Let's start with:
+.play _code/calc-01.go
+
+* 
+
+Try:
+
+ $> go build
+ $> ./calc
+ args: 1
+ args[0] = "./calc"
+
+ $> ./calc 1 2 foo 42.3 bar
+ args: 6
+ args[0] = "./calc"
+ args[1] = "1"
+ args[2] = "2"
+ args[3] = "foo"
+ args[4] = "42.3"
+ args[5] = "bar"
+
+* 
+
+Let's modify `main.go` to also print the argument type (with `"%T"`):
+
+.play _code/calc-02.go
+
+* 
+
+  $> ./calc 1 2 foo 42.3 bar
+  args: 6
+  args[0] = "./calc" (string)
+  args[1] = "1" (string)
+  args[2] = "2" (string)
+  args[3] = "foo" (string)
+  args[4] = "42.3" (string)
+  args[5] = "bar" (string)
+
+So for our calculator project, we need to somehow convert the strings to integers.
+
+In [[https://golang.org][Go]] this can be done with the [[https://golang.org/pkg/strconv][strconv]] package from the stdlib:
+
+  v, err := strconv.Atoi("42")
+  if err != nil {
+      panic(err)
+  }
+
+Don't fret about the `err` and the `panic` for now.
+We'll come back to this in the next chapter.
+
+* 
+
+So now, go write the calculator!
+
+It should behave like so:
+
+  $> cd ~/go/src/calc
+  $> go build
+  $> ./calc 1 2 3 4 100
+  sum= 110
+
+# * Solution
+# 
+# .code _code/calc-03.go
+
+* 
+
+We know have a great tool at our disposal.
+But it's quite blunt:
+
+- no way to ask help and usage
+- no way to customize its behaviour (_e.g.:_ enable a verbose mode)
+
+We need a way to pass parameters, "flags", that can tweak the runtime behaviour of our great calculator, like we did with:
+
+ $> ls -l
+ $> ls -F
+ $> find . -type d
+
+In [[https://golang.org][Go]], this can be done with the [[https://golang.org/pkg/flag][flag]] package.
+
+* 
+
+A typical usage would look like:
+
+.code _code/flag-pkg.go
+
+* 
+
+ $> go build -o flag-ex ./flag-example.go
+ $> ./flag-ex
+ verbose=   false
+ pt-min=    25.000000
+ b-tag=     2
+ os.Args=   [./flag-ex]
+ flag.Args= []
+ 
+ $> ./flag-ex -btag 3 -v -pt-min=0.1 foo bar
+ verbose=   true
+ pt-min=    0.100000
+ b-tag=     3
+ os.Args=   [./flag-ex -btag 3 -v -pt-min=0.1 foo bar]
+ flag.Args= [foo bar]
+
+ $> ./flag-ex -h
+ Usage of ./flag-ex:
+   -btag int
+     	number of b-tag for H->bb analysis (default 2)
+   -pt-min float
+     	min Pt cut for H->bb analysis (default 25)
+   -v	enable verbose mode
+
+* 
+
+Now, modify our super calculator so that it accepts a `"-v"` flag that enables a verbose mode (and is false by default):
+
+ $> ./calc 1 2 3 4 100
+ sum= 110
+
+ $> ./calc -v 1 2 3 4 100
+ 0
+ + 1 -> 1
+ + 2 -> 3
+ + 3 -> 6
+ + 4 -> 10
+ + 100 -> 110
+ ===============
+ sum= 110
+
+
+# * Solution
+# 
+# .code _code/calc-04.go /^func main/,/^}/ HLflag
+
+* Structs
+
+* Interlude: Lorentz vectors
+
+* Lorentz vectors
+
+How would you create a library that would deal with Lorentz vectors ?
+
+* 
+
+Using 4 variables ?
+
+  var px, py, pz, e float64
+
+Then perhaps, the functions to compute the mass and add 2 4-vectors:
+
+  func mass(px, py, pz, e float64) float64 {
+      m2 := e*e - (px*px + py*py + pz*pz)
+      return math.Sqrt(m2)
+  }
+
+  func add(px1, py1, pz1, e1, px2, py2, pz2, e2 float64) (px, py, pz, e float64) {
+      return px1+px2, py1+py2, pz1+pz2, e1+e2
+  }
+
+But then you have to carry around those 4 `float64` everywhere together.
+
+* 
+
+What if you want to compute the invariant mass of 2 particles, say a `Z` ⟶ `bb` ?
+
+You need:
+
+  var b1px, b1py, b1pz, b1e float64 // b-jet #1
+  var b2px, b2py, b2pz, b2e float64 // b-jet #2
+
+and then:
+
+  zpx, zpy, zpz, ze := add(b1px, b2px, b1py, b2py, b1pz, b2pz, b1e, b2e) // OOPS. BUG.
+  invMass := mass(zpx, zpy, zpz, ze)
+
+
+* 
+
+Or perhaps using an array of 4 `float64` ?
+
+  var p4 [4]float64
+
+  func mass(p [4]float64) float64 {
+      m2 := p[3]*p[3] - (p[0]*p[0] + p[1]*p[1] + p[2]*p[2])
+      return math.Sqrt(m2)
+  }
+
+  func add(p1, p2 [4]float64) [4]float64 {
+      return [4]float64{p1[0]+p2[0], p1[1]+p2[1], p1[2]+p2[2], p1[3]+p2[3]}
+  }
+
+
+* 
+
+Our `Z` ⟶ `bb` example becomes:
+
+  var (
+     b1, b2 [4]float64
+
+     z       = add(b1, b2)
+     invMass = mass(z)
+  )
+
+But then, how do you make sure everybody is using the same convention ?
+
+  [4]float64 == {px, py, pz, ene}
+
+and not, _e.g.:_
+
+  [4]float64 == {ene, px,  py,  pz}
+  [4]float64 == {ene, eta, phi, mass}
+  [4]float64 == {pt,  eta, phi, mass}
+  ...
+
+We need a way to bundle multiple values together *and* still attach some meaning (or give context) to these values...
+
+* Structs
+
+In [[https://golang.org][Go]] (and other languages), this task can be addressed with a `struct`:
+
+  type P4 struct {
+      Px, Py, Pz, E float64
+  }
+
+  func mass(p P4) float64 {
+      m2 := p.E*p.E - (p.Px*p.Px + p.Py*p.Py + p.Pz*p.Pz)
+      return math.Sqrt(m2)
+  }
+
+  func add(p1, p2 P4) P4 {
+      return P4{p1.Px+p2.Px, p1.Py+p2.Py, p1.Pz+p2.Pz, p1.E+p2.E}
+  }
+
+* 
+
+Like for the other declarations, the new type declaration of a struct is:
+
+  type [[new-name]] struct { [[definition]] }
+
+Fields of a struct can be of different types:
+
+  type P4 struct { Px, Py, Pz, E float64 }
+  type RecoParticle struct {
+      Momentum P4          // reconstructed momentum of the particle
+      Charge   float64     // charge of the particle
+      AlgName  string      // algorithm that reconstructed the particle
+      PDGID    int         // Particle Data Group ID
+      McTruth  *McParticle // pointer to MonteCarlo truth (simu-only)
+  }
+
+A struct can also have no field:
+
+  type Empty struct {}
+
+* 
+
+Let's write a program that can handle planar geometry (_ie:_ 2D).
+
+Create a package (not a program), named `geo2d` under `~/go/src/uca.fr/geo2d/geo.go`.
+
+In that package, create 2 structs:
+
+- a structure named `Point` with 2 fields of type `float64` that will store the `X` and `Y` coordinates of the Point,
+- a structure named `Rect` with 3 fields: the `Orig` (the bottom-most, left-most corner of the rectangle), the `Width` and the `Height` of the rectangle.
+
+  +-----------+
+  |<--Width-->| ^
+  |           | Height
+  |           | v
+  +-----------+
+  Orig
+
+* 
+
+Implement:
+
+  // Translate returns a new Point translated by dx and dy
+  func Translate(pt Point, dx float64, dy float64) Point { ... }
+
+  // Area returns the area of the given rectangle
+  func Area(rect Rect) float64 { ... }
+  
+  // Perimeter returns the perimeter of the given rectangle
+  func Perimeter(rect Rect) float64 { ... }
+
+  // Contains returns whether the given rectangle contains the given point
+  func Contains(rect Rect, pt Point) bool { ... }
+
+  // Overlap returns whether 2 rectangles overlap
+  func Overlap(r1, r2 Rect) bool { ... }
+
+
+* 
+
+To test your package `geo2d` actually works, run the following program:
+
+.play _code/geo2d-test.go
+
+# * Solution
+# 
+# .code _code/geo2d.go /START/,/END/
+
+# * Solution
+# 
+# .code _code/geo2d.go /STARTFUNCS/,/ENDFUNCS/
+
+
+
+* Resources
+
+.link https://golang-book.com
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp01_intro.pdf
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp02_oo.pdf
+.link https://tour.golang.org
+.link https://www.golangbootcamp.com/book
+

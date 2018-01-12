@@ -1,0 +1,406 @@
+Introduction to (imperative) programming - Part 7
+Master 1
+
+Sebastien Binet
+CNRS/IN2P3/LPC-Clermont
+sebastien.binet@clermont.in2p3.fr
+
+* Object Oriented Programming
+
+* Structs, Types & Methods
+
+Do you remember the Lorentz vectors we defined earlier ?
+
+  type P4 struct {
+      Px, Py, Pz, E float64
+  }
+
+  func mass(p P4) float64 {
+      m2 := p.E*p.E - (p.Px*p.Px + p.Py*p.Py + p.Pz*p.Pz)
+      return math.Sqrt(m2)
+  }
+
+  func add(p1, p2 P4) P4 {
+      return P4{p1.Px+p2.Px, p1.Py+p2.Py, p1.Pz+p2.Pz, p1.E+p2.E}
+  }
+
+* 
+
+Let's modify it a little bit:
+
+  type PxPyPzE struct {
+      px, py, pz, e float64
+  }
+
+  func mass(p PxPyPzE) float64 {
+      m2 := p.e*p.e - (p.px*p.px + p.py*p.py + p.pz*p.pz)
+      return math.Sqrt(m2)
+  }
+
+  func add(p1, p2 PxPyPzE) PxPyPzE {
+      return PxPyPzE{p1.px+p2.px, p1.py+p2.py, p1.pz+p2.pz, p1.e+p2.e}
+  }
+
+and add:
+
+  type PtEtaPhiM struct {
+      pt, eta, phi, m float64
+  }
+
+* 
+
+When we add another Lorentz vector type (with different components) we have a problem:
+
+- we can't call the `mass(...)` function with a `PtEtaPhiM` value.
+
+We could define 2 functions:
+
+ func massPxPyPzE   (p PxPyPzE  ) float64 { ... }
+ func massPtEtaPhiM (p PtEtaPhiM) float64 { ... }
+
+But we can do better: define methods on each type `PxPyPzE` and `PtEtaPhiM`:
+
+ func (p PxPyPzE)   Mass() float64 { /* as previously */ }
+ func (p PtEtaPhiM) Mass() float64 { return p.m }
+
+What did we gain here ?
+
+* 
+
+.play _code/hlv-main.go /^func main/,/^}/ HLxxx
+.play _code/hlv-main-meth.go /^func main/,/^}/ HLxxx
+
+* 
+
+We can also define a new method on the type `PxPyPzE`:
+
+.play _code/hlv-main-meth-stringer.go /^func \(p PxPyPzE\) String\(/,/^}/
+
+and then:
+
+.play _code/hlv-main-meth-stringer.go /^func main/,/^}/ HLxxx
+
+* 
+
+What did just happen ?
+
+The `fmt.Printf` function managed to call the method `String()` of our `PxPyPzE` value.
+When `fmt.Printf` was written (~10 years ago),
+
+- it didn't know a type like `PxPyPzE` would ever be written,
+- it didn't even know it would have a method with that name and signature!
+
+Yet, somehow it knew it had to call `String()` on our `z` value...
+
+Well... that's because `fmt.Printf` used an *interface* and because our `PxPyPzE` (implicitly) implemented it.
+
+* Interfaces
+
+An interface type is defined as a set of method signatures.
+
+A value of interface type can hold any value that implements those methods.
+
+  type Abser interface {
+      Abs() float64
+  }
+  
+  type Reader interface {
+      Read(data []byte) (int, error)
+  }
+
+
+_E.g.:_ the type `MyFloat` implements the `Abser` interface:
+
+  type MyFloat float64
+  
+  func (f MyFloat) Abs() float64 {
+  	if f < 0 {
+  		return float64(-f)
+  	}
+  	return float64(f)
+  }
+
+* Interfaces
+
+Modify the code below to make `MyFloat` and `Vertex` implement the `Abser` interface:
+
+.play _code/ex-interfaces.go /STARTABSER OMIT/,/ENDABSER OMIT/
+
+# * Solution
+# 
+# .play _code/ex-interfaces.go /STARTABSERIMPL OMIT/,/ENDABSERIMPL OMIT/
+
+* 
+
+Interfaces are useful to write code that can use code that hasn't been written yet.
+
+  func Selector(a Abser) bool {
+      if a.Abs() > 2.5 {
+          return true
+      }
+      return false
+  }
+
+  func do() {
+    Selector(MyFloat(42))    // this compiles.
+    Selector(&Vertex{1,2})   // this also compiles.
+    Selector(Vertex{1,2})    // but this does NOT compile.
+  }
+
+
+The `Selector` function can be used with values of types `MyFloat`, `Vertex` or any other type (possibly one written 15 years from now) that implements the `Abser` interface.
+
+And no need to modify nor adapt the `Selector` function to get it working with these new types, as long as they implement the `Abser` interface.
+
+It's a contract that binds the 2 parties (the interface and the type that implements that interface.)
+
+* 
+
+Let's revisit our `geo2d` package.
+
+We had defined 2 types: `Point` and `Rect`.
+
+Let's introduce 1 new type: `Circle`.
+
+Define 2 new interfaces:
+
+  type Surfer interface {
+      // Surf returns the surface of a 2D shape
+      Surf() float64
+  }
+
+  type Stringer interface {
+      // String returns a string reprensation of a value.
+      String() string
+  }
+
+* 
+
+Modify `geo2d` such that `Point`, `Rect` and `Circle` implement the `Stringer` interface.
+
+Modify `geo2d` such that `Rect` and `Circle` implement the `Surfer` interface.
+
+Finally, modify the `geo2d.Area` function to take a `Surfer` parameter instead of a `Rect`.
+
+Test that you can then pass to `geo2d.Area`:
+
+- a value of type `Circle` and,
+- a value of type `Rect`.
+
+# * Solution
+# 
+# .code _code/geo2d-iface.go /STARTSTRINGER/,/ENDSTRINGER/
+# 
+# * Solution
+# 
+# .code _code/geo2d-iface.go /STARTSURFACER/,/ENDSURFACE/
+
+* 
+
+Interfaces are a very powerful abstraction.
+
+So much so that [[https://golang.org][Go]] uses one to flag errors; the [[https://golang.org/pkg/builtin#error][error]] interface:
+
+  type error interface {
+      Error() string
+  }
+
+That interface was deemed so useful that it is now part of the set of builtin types and functions of the Go language.
+
+Interfaces are actually one of the building blocks of OO-programming in Go.
+
+
+
+
+* OOP
+
+.link https://en.wikipedia.org/wiki/Object-oriented_programming
+
+ Object-oriented programming (OOP) is a programming paradigm based on the concept of "objects",
+ which may contain data, in the form of fields, often known as attributes;
+ and code, in the form of procedures, often known as methods.
+
+The "classical" definition of an OOP language relies on 3 features:
+
+- Polymorphism
+- Encapsulation
+- Inheritance
+
+OOP is a bit like landing a role in a Hollywood production: "don't call us, we'll call you".
+
+You setup and implement the needed interface(s) for your type(s) and you can then have your type(s) being used and integrated with the overall surrounding framework.
+
+* 
+
+Let's see how we can implement an I/O interface.
+Let's create a new `rot13` package, in `~/go/src/uca.fr/rot13`.
+
+`rot13` will implement the Caesar cipher ("rotate by 13 places"):
+
+.link https://en.wikipedia.org/wiki/ROT13
+
+We'll start with a `rot13.go` file that looks like:
+
+ package rot13
+
+ func rot13(b byte) byte {
+     // ...
+ }
+
+- under this `rot13` transformation, `"hello"` should become `"uryyb"`
+
+* 
+
+- in that `rot13` package, create `rot13_test.go` with the following content:
+
+.code _code/rot13_test.go /STARTIMPORT OMIT/,/ENDIMPORT OMIT/ HLxxx
+
+* 
+
+- in that `rot13` package, create `rot13_test.go` with the following content:
+
+.code _code/rot13_test.go /^func TestRot13/,/^}/ HLxxx
+
+* 
+
+So now, we can start to implement the `rot13` function and make sure it passes all the tests:
+
+  $ go test -v
+  === RUN TestRot13
+  --- PASS: TestRot13 (0.00 seconds)
+  PASS
+  ok  	uca.fr/rot13	0.002s
+  
+- `go` `test` builds and runs the tests in the local directory.
+
+# * Solution
+# 
+# .code _code/rot13.go /STARTROT13-FUNC OMIT/,/ENDROT13-FUNC OMIT/
+
+* 
+
+We've seen and implemented the `Abser`, `Surfer` and `Stringer` interfaces.
+
+Our `Stringer` interface is actually a cousin of the one living in the `fmt` package: `fmt.Stringer` (that's why we had our types implementing it being able to be printed correctly with `fmt.Printf`).
+
+Another very used (and useful) interface is `io.Reader` (which lives in the [[https://golang.org/pkg/io][io]] package):
+
+  // Reader is the interface that wraps the basic Read method.
+  type Reader interface {
+     Read(p []byte) (n int, err error)
+  }
+
+`io.Reader` is at the basis of all the input operations in [[https://golang.org][Go]] and thus at the basis of how [[https://golang.org][Go]] interacts with files and the operating system.
+
+* 
+
+Let's try to integrate our very useful `rot13` function with the I/O system.
+Let's write another program, `~/go/src/caesar-cipher/main.go`:
+
+.code _code/caesar-cipher.go HLxxx
+
+* 
+
+Now, in `"uca.fr/rot13"`, implement the `io.Reader` interface:
+
+.code _code/rot13.go /STARTROT13 OMIT/,/ENDROT13 OMIT/
+
+  func (r reader) Read(p []byte) (int, error) {
+       // ...
+  }
+
+- eventually, the following should work:
+
+  $> cd caesar-cipher
+  $> go build
+  $> echo "hello" | caesar-cipher
+  uryyb
+
+  $> echo "hello" | caesar-cipher | caesar-cipher
+  hello
+
+
+# * Solution
+# 
+# .code _code/rot13.go /STARTROT13SOLUTION OMIT/,/ENDROT13SOLUTION OMIT/
+
+* Polymorphism
+
+So, our `rot13.reader` type implements the `io.Reader` interface, and can be used as an `io.Reader` value, _i.e._ as a parameter of the `io.Copy` function:
+
+  $> go doc io.Copy
+  func Copy(dst Writer, src Reader) (written int64, err error)
+      Copy copies from src to dst until either EOF is reached on src or an error
+      occurs. It returns the number of bytes copied and the first error
+      encountered while copying, if any.
+
+That's *polymorphism*: the ability of different values (or objects) to respond, each in its own way, to identical messages.
+
+Remember our `geo2d.Circle` and our `geo2d.Rect` types ?
+They both implemented the `geo2d.Surfer` interface by implementing (in their own way) the computation of their surface.
+That's polymorphism.
+
+* Encapsulation
+
+*Encapsulation* is the concept that binds together the data *and* the functions that manipulate that data, and that keeps both safe from outside interferences (and misuses.)
+
+* 
+
+In Go, we can achieve encapsulation at the package level.
+
+ package foo // file: go/src/my-pkgs/foo/file1.go
+
+ type Point { X float64; c int }
+ func (p Point) Color() int { return p.c }
+ func (p Point) move() { ... }
+
+ func F(v float64) { ... }
+ func g(v float32) { ... }
+ 
+ var Exported = 42
+ var private = 42
+
+Inside package `foo`, one can access all the data encapsulated by the type `Point`.
+We can also use the functions `F()` and `g()`, or the methods `Color()` and `move()`.
+
+Outside of package `foo`, users importing `"my-pkgs/foo"` can only use `Point`, `Move()` and `F()` as their name start with an upper case letter: these identifiers are *exported*.
+
+This mechanism also works for fields of the type `Point`: outside of the package `foo`, users can only access and/or modify the field `X` but not the field `c`.
+
+* 
+
+With encapsulation, we could revisit our `geo2d.Rect` like so:
+
+.code _code/geo2d-encapsulated.go /STARTTYPES/,/ENDTYPES/
+
+* 
+
+With encapsulation, we are sure the rectangles that are created will be real rectangles (and not just some polygon with 4 points).
+
+And with this new `Rect` type, we can support rectangles that are rotated by some angle: this wasn't possible with the original design.
+
+Also, now that the internals and the minute details of `Rect` are hidden, potential users won't rely on them nor be able to use them: we are free to modify them without impacting these users.
+
+* Inheritance
+
+.link https://en.wikipedia.org/wiki/Inheritance_(object-oriented_programming)
+
+ inheritance is when an object or class is based on another object (prototypal
+ inheritance) or class (class-based inheritance), using the same implementation.
+
+Inheritance is usually a mechanism for code re-use: the class `Derived` inheriting from the class `Parent`, inherits (some of) its methods.
+
+In Go, there is no "real" inheritance.
+But we can somewhat "fake" it with _embedding_:
+
+.code _code/embedding.go HLxxx
+
+
+* Resources
+
+.link https://golang-book.com
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp01_intro.pdf
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp02_oo.pdf
+.link https://tour.golang.org
+.link https://www.golangbootcamp.com/book
+

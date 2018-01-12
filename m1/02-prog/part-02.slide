@@ -1,0 +1,105 @@
+Introduction to (imperative) programming - Part 2
+Master 1
+
+Sebastien Binet
+CNRS/IN2P3/LPC-Clermont
+sebastien.binet@clermont.in2p3.fr
+
+* Functions
+
+* Functions
+
+One of the pillars of imperative programming is the concept of a *function*.
+Functions allow to encapsulate a piece of algorithmic code, clearly defining the set of input data that it needs to operate and the output result of that piece of computation.
+
+This piece of algorithmic code, cleanly encapsulated, can then be reused in other programs, by calling the function.
+
+Let's revisit the `add` example:
+
+.code _code/add.go
+
+We could imagine wanting to encapsulate this addition of `a+b` and make it available for other programs.
+
+* 
+
+In [[https://golang.org][Go]], declaring and defining a function is done like this:
+
+ func add(a int, b int) int {
+     return a+b
+ }
+
+We use the keyword *func* to tell the compiler we are defining a new function, then comes the name of the function we are defining, the list of input parameters and their types, and finally, the type of the returned value.
+Then comes the body of the function, its implementation.
+
+ func [function-name]([input-params]) [output] { [body] }
+
+* 
+
+So the `add` example from earlier can be re-written like so:
+
+.play _code/add-func.go
+
+* 
+
+Modify the `add` example from earlier and add the following functions:
+
+- `mul`: takes 2 integers and returns their product
+- `div`: takes 2 integers and returns their division
+
+Modify `main` to display:
+
+- `add(a,b)`
+- `mul(a,b)`
+- `div(a,b)`
+- `mul(mul(a,b),div(a,b))`
+
+Try different values of `a` and `b`:
+
+- `a=10`, `b=11`
+- `a=10`, `b=5`
+- `a=10`, `b=0`
+
+Anything peculiar?
+
+* 
+
+Modify the previous program and define the following functions: `fadd`, `fmul` and `fdiv`.
+They should do the same than their `add`, `mul` and `div` counter-parts (except they operate on `float64` values.)
+
+Modify `main` to define 2 new `float64` variables `x` and `y` and to display:
+
+- `fadd(x,y)`
+- `fmul(x,y)`
+- `fdiv(x,y)`
+- `fmul(fmul(x,y),fdiv(x,y))`
+
+Try different values of `x` and `y`:
+
+- `x=10.0`, `y=11.0`
+- `x=10.0`, `y=5.0`
+- `x=10.0`, `y=0.0`
+
+# * Solution
+# 
+# .play _code/fadd.go
+
+* 
+
+Modify the previous program to define a new function `fma` (fused multiply-add) that takes 3 `float64` arguments and returns `x*y+z`.
+Except that you should implement it using `fmul` and `fadd`.
+
+Display the result of `fma(x,y,2.0)`.
+
+# * Solution
+# 
+# .play _code/fma.go
+
+
+* Resources
+
+.link https://golang-book.com
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp01_intro.pdf
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp02_oo.pdf
+.link https://tour.golang.org
+.link https://www.golangbootcamp.com/book
+

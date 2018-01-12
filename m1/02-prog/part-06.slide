@@ -1,0 +1,220 @@
+Introduction to (imperative) programming - Part 6
+Master 1
+
+Sebastien Binet
+CNRS/IN2P3/LPC-Clermont
+sebastien.binet@clermont.in2p3.fr
+
+* I/O
+
+* Working with files
+
+Programming languages provide a way to:
+
+- create files,
+- open files for read-access,
+- open files for write-access,
+- iterate over the content of a file on disk (and possibly modify that content.)
+
+In [[https://golang.org][Go]], this is done (mostly) with the [[https://golang.org/pkg/os][os]] package.
+
+  f, err := os.Open("data.txt")
+  if err != nil {
+      panic(err)
+  }
+
+On the disk, a file is just a sequence of `bytes`.
+
+Quite naturally, [[https://golang.org][Go]] will represent this data (to be read from a file or written to a file) as a `[]byte`, a slice of `bytes`.
+
+
+* 
+
+Let's create a new program `~/go/src/create-file/main.go` with the following content:
+
+.code _code/create-file.go HLxxx
+
+* 
+
+Running this program should give:
+
+ $> go run ./main.go
+ 
+ $> cat data.txt
+ hello world
+ 0 1 2 3 4 5
+ good bye
+
+Creating/opening a file, writing to the file, reading from the file and/or closing the file *MAY* fail for some reason (not enough disk space, corrupted filesystem, broken hard disk, no more network connection, etc...)
+
+That's why most of the function that deal with files return this extra `err` value (of type `error`.)
+
+We'll see in more details what an `error` type is in the chapter about `interfaces`.
+For now, remember to always `Close()` your files whenever you've opened them (for reading or writing), and always check whether that `error` value is not `nil`.
+
+* 
+
+Let's modify `~/go/src/create-file/main.go` like so:
+
+.code _code/create-file-floats.go
+
+* 
+
+Running this program should give:
+
+ $> go run ./main.go
+
+ $> head -n 4 data.txt
+ -1.233758177597947
+ -0.12634751070237293
+ -0.5209945711531503
+ 2.28571911769958
+
+ $> wc ./data.txt 
+  1000  1000 19671 ./data.txt
+
+
+Now create yet another program, `~/go/src/read-file/main.go` with the following content (see next slide.)
+
+* 
+
+.code _code/read-file-floats.go /^func main/,/^}/
+
+* 
+
+Copy the `data.txt` file created previously into the current directory.
+Running our new program should give:
+
+ $> go run ./main.go
+ mean= -0.013051
+
+* 
+
+Hard-coding the number of times to loop over the lines in the input file isn't quite satisfactory.
+
+Let's try to fix that.
+In [[https://golang.org][Go]], there is a special type that can scan lines of a file and iteratively present each line as an API:
+
+  f, err := os.Open("some-file.txt")
+  if err != nil { panic(err) }
+  scan := bufio.NewScanner(f)  // need to import "bufio"
+
+  for scan.Scan() {
+    txt := scan.Text() // returns a string with the content of current line.
+    fmt.Printf("we've read line %q\n", txt)
+  }
+
+  if err = scan.Err(); err != nil { panic(err) }
+  if err = f.Close();  err != nil { panic(err) }
+
+.link https://golang.org/pkg/bufio#Scanner
+
+* 
+
+Wielding this new tool at our disposal, let's modify the previous program (`read-file/main.go`) to not hard-code the number of times/lines to loop over when reading the input file.
+
+In the previous version of that program, we used `fmt.Fscanf` to extract a `float64` out of the file.
+Now we need to extract a `float64` out of a line (which is a `string`.)
+
+We'll need to use a slightly different function to do that: `fmt.Sscanf`.
+
+.link https://golang.org/pkg/fmt#Sscanf
+
+ for scan.Scan() {
+     var f64 float64
+     var txt = scan.Text()
+     _, err = fmt.Sscanf(txt, "%f", &f64)
+     if err != nil { panic(err) }
+ }
+
+* 
+
+Make sure we still get the same answer when running the new version of the program:
+
+ $> go run ./main.go
+ mean= -0.013051
+
+
+# * Solution
+# 
+# .code _code/read-file-floats-bufio.go /^func main/,/^}/
+
+* 
+
+Create a new program `~/go/src/write-2d-gauss/main.go`.
+It should create a new `data-2d-gauss.txt` file containing 2 columns of data.
+
+Each column should be a 1000-sample of (respectively):
+
+- a gaussian with mean 20 and standard deviation 5
+- a gaussian with mean 10 and standard deviation 20.
+
+Create another program `~/go/src/read-2d-gauss/main.go`, that will:
+
+- read the previously created `data-2d-gauss.txt` file,
+- store the data for each column in a dedicated slice of `float64`,
+- define 2 functions `mean` and `stddev` that take a `[]float64` slice as input and return (respectively) the mean and the standard deviation of the slice.
+
+Make sure you get the expected mean and stddev values for each sample.
+
+# * Solution
+# 
+# .code _code/write-2d-gauss.go /^func main/,/^}/
+# 
+# * Solution
+# 
+# .code _code/read-2d-gauss.go /var g1/,/^}/
+# 
+# * Solution
+# 
+# .code _code/read-2d-gauss.go /^\/\/ mean/,/^}/
+# .code _code/read-2d-gauss.go /^\/\/ stddev/,/^}/
+
+* 
+
+Let's revisit our super calculator.
+
+Modify the calculator to be able to sum `float64` values (and not just `int` as previously.)
+
+Add 2 new flags:
+
+ var flagFile = flag.String("f", "", "path to a file holding values")
+ var flagStats = flag.Bool("stats", false, "enable computation+display of stats")
+
+Modify the calculator to be able to optionally take a path to a file (with `-f=my-file.txt`) and then take data from that file instead of from the command line like previously.
+
+Make sure that it still works as previously when no `-f` flag is passed (_ie:_ when `*flagFile==""`).
+
+Use a `bufio.Scanner` to read the (optional) input file.
+
+* 
+
+Modify the calculator to compute the mean and standard deviation of the input data when the `-stats` flag is passed to the program.
+When that flag is passed, the calculator should display the mean and std-dev of the sample at the end of the program.
+It should work for both modes (when `*flagFile==""` and when a path to a file is given to the program.)
+
+# * Solution
+# 
+# .code _code/calc-05.go /^func main/,/^}/
+# 
+# * Solution
+# 
+# .code _code/calc-05.go /^func run/,/^}/
+# 
+# * Solution
+# 
+# .code _code/calc-05.go /^func readFile/,/^}/
+# 
+# * Solution
+# 
+# .code _code/calc-05.go /^func readArgs/,/^}/
+
+
+* Resources
+
+.link https://golang-book.com
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp01_intro.pdf
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp02_oo.pdf
+.link https://tour.golang.org
+.link https://www.golangbootcamp.com/book
+

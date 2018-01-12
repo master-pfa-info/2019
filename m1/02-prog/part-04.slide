@@ -1,0 +1,262 @@
+Introduction to (imperative) programming - Part 4
+Master 1
+
+Sebastien Binet
+CNRS/IN2P3/LPC-Clermont
+sebastien.binet@clermont.in2p3.fr
+
+* Control flow structures
+
+* Control flow structures
+
+So far our programs have been pretty boring and linear.
+They were a very straightforward list of instructions, that the CPU would execute one after the other.
+Very predictable. Very linear.
+
+But in real life, we usually want our programs to do different things depending on the value(s) of some variable(s).
+
+This is achieved with an `if`-statement.
+
+ if len(array) > 10 {
+   println("array is big")
+
+ } else if len(array) == 1 {
+   println("array length is just one")
+ 
+ } else {
+   println("array is rather small")
+ }
+
+# * Solution
+# 
+# .play _code/if-else.go
+
+* Control flow structures
+
+Another useful control flow structure is the `for`-loop:
+
+ for i := 0; i < 10; i++ {
+     println("i=", i)
+ }
+
+or, the version iterating on a slice:
+
+ vs := []int{0, 2, 4, 6, 8}
+ for i := range vs {
+     println("i=", i, "==>", vs[i])
+ }
+
+or:
+
+ vs := []int{0, 2, 4, 6, 8}
+ for i, v := range vs {
+     println("i=", i, "==>", v)
+ }
+
+* 
+
+.play _code/for-loops.go
+
+* 
+
+Write a new program, in `~/go/src/for-loop/main.go`, that will define a function `squares` that:
+
+- takes an integer `n` as input
+- returns a slice of length `n` and content the squares of the index
+
+Create another function `sum` that takes a slice of integers and returns the sum of all the elements of the input slice.
+
+Edit `main` so that it calls `sum` for all the integers from `0` to `20` (excluded) and prints both the argument of `sum` and the result of `sum`.
+
+# * Solution
+# 
+# .play _code/for-loop-sum.go /START/,/END/
+ 
+* 
+
+Write a new program, in `~/go/src/sum-even/main.go`, that defines a function `sum` that:
+
+- takes a slice of integers as input
+- returns the sum of all the even elements from that input slice
+
+Edit `main` so that it calls `sum` for all the integers from `0` to `20` (excluded), generates a slice of integers from `0` to `i`, and prints the value of `i` and the result of `sum(slice)`.
+
+# * Solution
+# 
+# .play _code/sum-even.go /START/,/END/
+
+* Packages and functions
+
+So far, we've only seen how to create a single binary application/program.
+We compiled that one `main.go` file (through `go` `run`) and ran.
+
+Everything we needed for our `main` function was defined inside `main.go`.
+
+In real life, we'd rather:
+
+- create re-usable pieces of functionalities
+- group them by theme and package them as libraries (_a.k.a.:_ `"packages"` in Go)
+
+Then, people can `import` these libraries and the functions defined there in their own programs (or libraries.)
+
+The [[https://golang.org][Go]] programming language comes with a rather large set of packages, usually called the "standard library" (_a.k.a.:_ "stdlib".)
+
+* Standard library
+
+The documentation for [[https://golang.org][Go]]'s standard library is available on:
+
+.link https://golang.org/pkg
+
+It's quite extensive.
+
+Let's inspect and use the `"math"` and `"fmt"` package:
+
+.link https://golang.org/pkg/math
+.link https://golang.org/pkg/fmt
+
+* 
+
+.play _code/stdlib-pkg.go
+
+* Package
+
+Let's create our first package.
+
+Create a new file `~/go/src/uca.fr/ints/ints.go` with the following content:
+
+.code _code/ints-pkg.go
+
+* 
+
+Now, create a new program in `~/go/src/sum-2/main.go`, and edit `main` such that:
+
+- it creates a slice of `20` elements, calling `ints.Gen(20)`,
+- it prints its content
+- it prints the result of calling `ints.Sum(slice)`, using the `"fmt"` package from the standard library.
+
+_NB:_ importing our `"ints"` package is done like so:
+
+ import "uca.fr/ints"
+
+# * Solution
+# 
+# .play _code/use-ints-pkg.go
+
+* 
+
+As a simple way to play with functions and loops, implement the square root function using Newton's method.
+
+In this case, Newton's method is to approximate Sqrt(x) by picking a starting point z and then repeating:
+
+.image _figs/newton.png
+
+To begin with, just repeat that calculation 10 times and see how close you get to the answer for various values (1, 2, 3, ...).
+
+Next, change the loop condition to stop once the value has stopped changing (or only changes by a very small delta).
+See if that's more or fewer iterations.
+How close are you to the `math.Sqrt`?
+
+* 
+
+.code _code/newton-start.go
+
+# * Solution
+# 
+# .play _code/newton-s1.go
+# .image _figs/newton.png
+
+# * Solution
+# 
+# .play _code/newton-s2.go /START/,/END/
+# .image _figs/newton.png
+
+* Interlude: Monte Carlo simulations
+
+.link https://en.wikipedia.org/wiki/Monte_Carlo_method
+
+Monte Carlo methods are useful for simulating systems with many coupled degrees of freedom.
+In many HEP experiments, we use [[http://geant4.cern.ch/][GEANT]] to simulate the interactions of particules through detectors.
+`GEANT` simulates step-by-step the interactions of particules through matter and the energy deposits.
+
+The simulation of physics processes with GEANT is very detailed but, also, very CPU hungry.
+(That's why we usually run so called "fast simulation" programs, with a less detailed description of the physics processes.)
+
+Let's do that.
+
+* Introduction to Monte Carlo methods
+
+We'll first try to approximate Pi using the Monte-Carlo method.
+
+Consider a circle inscribed in a unit square.
+Given that the circle and the square have a ratio of areas that is π/4, the value of  π can be approximated using a Monte-Carlo method:
+
+- draw a square, inscribe a circle within it,
+- uniformly scatter objects of uniform size over the square,
+- count the number of objects inside the circle and the total number of objects,
+- the ratio of the inside-count and the total-sample-count is an *estimate* of the ratio of the two areas, which is π/4.
+
+Multiply the result by 4 to estimate π.
+
+
+* 
+
+Let's write a new program under `~/go/src/mc-pi/main.go`, starting with:
+
+.code _code/mc-pi-start.go
+
+* 
+
+Have a look at the documentation of `math/rand` (for drawing random numbers):
+
+.link https://golang.org/pkg/math/rand
+
+Then, try with different values for `n`:
+
+ $> go run ./main.go -n 10
+ $> go run ./main.go -n 1000
+ $> ...
+
+# * Solution
+# 
+# .play _code/mc-pi.go
+
+*
+
+Let's add some graphics:
+
+.link https://godoc.org/github.com/master-pfa-info/mcpi
+
+The `mcpi` package is a rather simple package that draws `(x,y)` points in the plane `((0,0), (1,1))`.
+
+
+* 
+
+Let's add some graphics and (limited) interactivity to our program.
+
+We'll use the [[https://godoc.org/github.com/master-pfa-info/mcpi][master-pfa-info/mcpi]] package to plot the `(x,y)` points inside our quarter of a circle.
+
+.link https://github.com/master-pfa-info/mcpi
+
+As the documentation in the link above says, we need to install that library, using the following command (in the shell):
+
+ $> go get github.com/master-pfa-info/mcpi
+
+* 
+
+Modify the previous program to plot the `(x,y)` points, using the `mcpi.Plot(x,y)` function:
+
+.code _code/mc-pi-plot-start.go
+
+* 
+
+.image _figs/mc-pi.png 600 _
+
+
+* Resources
+
+.link https://golang-book.com
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp01_intro.pdf
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp02_oo.pdf
+.link https://tour.golang.org
+.link https://www.golangbootcamp.com/book
+

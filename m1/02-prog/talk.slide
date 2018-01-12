@@ -154,9 +154,9 @@ Eventually, the program shall display:
   f64= +2.500000e-001
   bool= true / false
 
-* Solution
-
-.play _code/builtins.go
+# * Solution
+# 
+# .play _code/builtins.go
 
 * Variables
 
@@ -235,9 +235,9 @@ Eventually, the program shall display:
  $> go run ./main.go
  a+b= 21
 
-* Solution
-
-.play _code/add.go
+# * Solution
+# 
+# .play _code/add.go
 
 * Functions
 
@@ -311,9 +311,9 @@ Try different values of `x` and `y`:
 - `x=10.0`, `y=5.0`
 - `x=10.0`, `y=0.0`
 
-* Solution
-
-.play _code/fadd.go
+# * Solution
+# 
+# .play _code/fadd.go
 
 * 
 
@@ -322,9 +322,9 @@ Except that you should implement it using `fmul` and `fadd`.
 
 Display the result of `fma(x,y,2.0)`.
 
-* Solution
-
-.play _code/fma.go
+# * Solution
+# 
+# .play _code/fma.go
 
 * Arrays and Slices
 
@@ -378,9 +378,9 @@ The program shall print:
  arr[1]= 42
  arr[2]= 12
 
-* Solution
-
-.play _code/arr.go
+# * Solution
+# 
+# .play _code/arr.go
 
 * Slices
 
@@ -448,9 +448,9 @@ The program shall display:
 
 What does happen if you try to access `sli[3]` ?
 
-* Solution
-
-.play _code/sli.go
+# * Solution
+# 
+# .play _code/sli.go
 
 * Control flow structures
 
@@ -472,9 +472,9 @@ This is achieved with an `if`-statement.
    println("array is rather small")
  }
 
-* Solution
-
-.play _code/if-else.go
+# * Solution
+# 
+# .play _code/if-else.go
 
 * Control flow structures
 
@@ -513,9 +513,9 @@ Create another function `sum` that takes a slice of integers and returns the sum
 
 Edit `main` so that it calls `sum` for all the integers from `0` to `20` (excluded) and prints both the argument of `sum` and the result of `sum`.
 
-* Solution
-
-.play _code/for-loop-sum.go /START/,/END/
+# * Solution
+# 
+# .play _code/for-loop-sum.go /START/,/END/
  
 * 
 
@@ -526,9 +526,9 @@ Write a new program, in `~/go/src/sum-even/main.go`, that defines a function `su
 
 Edit `main` so that it calls `sum` for all the integers from `0` to `20` (excluded), generates a slice of integers from `0` to `i`, and prints the value of `i` and the result of `sum(slice)`.
 
-* Solution
-
-.play _code/sum-even.go /START/,/END/
+# * Solution
+# 
+# .play _code/sum-even.go /START/,/END/
 
 * Packages and functions
 
@@ -583,9 +583,9 @@ _NB:_ importing our `"ints"` package is done like so:
 
  import "uca.fr/ints"
 
-* Solution
-
-.play _code/use-ints-pkg.go
+# * Solution
+# 
+# .play _code/use-ints-pkg.go
 
 * 
 
@@ -605,15 +605,15 @@ How close are you to the `math.Sqrt`?
 
 .code _code/newton-start.go
 
-* Solution
+# * Solution
+# 
+# .play _code/newton-s1.go
+# .image _figs/newton.png
 
-.play _code/newton-s1.go
-.image _figs/newton.png
-
-* Solution
-
-.play _code/newton-s2.go /START/,/END/
-.image _figs/newton.png
+# * Solution
+# 
+# .play _code/newton-s2.go /START/,/END/
+# .image _figs/newton.png
 
 * Interlude: Monte Carlo simulations
 
@@ -661,9 +661,9 @@ Then, try with different values for `n`:
  $> go run ./main.go -n 1000
  $> ...
 
-* Solution
-
-.play _code/mc-pi.go
+# * Solution
+# 
+# .play _code/mc-pi.go
 
 *
 
@@ -797,9 +797,9 @@ It should behave like so:
   $> ./calc 1 2 3 4 100
   sum= 110
 
-* Solution
-
-.code _code/calc-03.go
+# * Solution
+# 
+# .code _code/calc-03.go
 
 * 
 
@@ -866,9 +866,9 @@ Now, modify our super calculator so that it accepts a `"-v"` flag that enables a
  sum= 110
 
 
-* Solution
-
-.code _code/calc-04.go /^func main/,/^}/ HLflag
+# * Solution
+# 
+# .code _code/calc-04.go /^func main/,/^}/ HLflag
 
 * Structs
 
@@ -1034,13 +1034,13 @@ To test your package `geo2d` actually works, run the following program:
 
 .play _code/geo2d-test.go
 
-* Solution
+# * Solution
+# 
+# .code _code/geo2d.go /START/,/END/
 
-.code _code/geo2d.go /START/,/END/
-
-* Solution
-
-.code _code/geo2d.go /STARTFUNCS/,/ENDFUNCS/
+# * Solution
+# 
+# .code _code/geo2d.go /STARTFUNCS/,/ENDFUNCS/
 
 
 * I/O
@@ -1173,9 +1173,9 @@ Make sure we still get the same answer when running the new version of the progr
  mean= -0.013051
 
 
-* Solution
-
-.code _code/read-file-floats-bufio.go /^func main/,/^}/
+# * Solution
+# 
+# .code _code/read-file-floats-bufio.go /^func main/,/^}/
 
 * 
 
@@ -1195,18 +1195,18 @@ Create another program `~/go/src/read-2d-gauss/main.go`, that will:
 
 Make sure you get the expected mean and stddev values for each sample.
 
-* Solution
-
-.code _code/write-2d-gauss.go /^func main/,/^}/
-
-* Solution
-
-.code _code/read-2d-gauss.go /var g1/,/^}/
-
-* Solution
-
-.code _code/read-2d-gauss.go /^\/\/ mean/,/^}/
-.code _code/read-2d-gauss.go /^\/\/ stddev/,/^}/
+# * Solution
+# 
+# .code _code/write-2d-gauss.go /^func main/,/^}/
+# 
+# * Solution
+# 
+# .code _code/read-2d-gauss.go /var g1/,/^}/
+# 
+# * Solution
+# 
+# .code _code/read-2d-gauss.go /^\/\/ mean/,/^}/
+# .code _code/read-2d-gauss.go /^\/\/ stddev/,/^}/
 
 * 
 
@@ -1231,21 +1231,21 @@ Modify the calculator to compute the mean and standard deviation of the input da
 When that flag is passed, the calculator should display the mean and std-dev of the sample at the end of the program.
 It should work for both modes (when `*flagFile==""` and when a path to a file is given to the program.)
 
-* Solution
-
-.code _code/calc-05.go /^func main/,/^}/
-
-* Solution
-
-.code _code/calc-05.go /^func run/,/^}/
-
-* Solution
-
-.code _code/calc-05.go /^func readFile/,/^}/
-
-* Solution
-
-.code _code/calc-05.go /^func readArgs/,/^}/
+# * Solution
+# 
+# .code _code/calc-05.go /^func main/,/^}/
+# 
+# * Solution
+# 
+# .code _code/calc-05.go /^func run/,/^}/
+# 
+# * Solution
+# 
+# .code _code/calc-05.go /^func readFile/,/^}/
+# 
+# * Solution
+# 
+# .code _code/calc-05.go /^func readArgs/,/^}/
 
 * Object Oriented Programming
 
@@ -1368,9 +1368,9 @@ Modify the code below to make `MyFloat` and `Vertex` implement the `Abser` inter
 
 .play _code/ex-interfaces.go /STARTABSER OMIT/,/ENDABSER OMIT/
 
-* Solution
-
-.play _code/ex-interfaces.go /STARTABSERIMPL OMIT/,/ENDABSERIMPL OMIT/
+# * Solution
+# 
+# .play _code/ex-interfaces.go /STARTABSERIMPL OMIT/,/ENDABSERIMPL OMIT/
 
 * 
 
@@ -1429,13 +1429,13 @@ Test that you can then pass to `geo2d.Area`:
 - a value of type `Circle` and,
 - a value of type `Rect`.
 
-* Solution
-
-.code _code/geo2d-iface.go /STARTSTRINGER/,/ENDSTRINGER/
-
-* Solution
-
-.code _code/geo2d-iface.go /STARTSURFACER/,/ENDSURFACE/
+# * Solution
+# 
+# .code _code/geo2d-iface.go /STARTSTRINGER/,/ENDSTRINGER/
+# 
+# * Solution
+# 
+# .code _code/geo2d-iface.go /STARTSURFACER/,/ENDSURFACE/
 
 * 
 
@@ -1515,9 +1515,9 @@ So now, we can start to implement the `rot13` function and make sure it passes a
   
 - `go` `test` builds and runs the tests in the local directory.
 
-* Solution
-
-.code _code/rot13.go /STARTROT13-FUNC OMIT/,/ENDROT13-FUNC OMIT/
+# * Solution
+# 
+# .code _code/rot13.go /STARTROT13-FUNC OMIT/,/ENDROT13-FUNC OMIT/
 
 * 
 
@@ -1562,9 +1562,9 @@ Now, in `"uca.fr/rot13"`, implement the `io.Reader` interface:
   hello
 
 
-* Solution
-
-.code _code/rot13.go /STARTROT13SOLUTION OMIT/,/ENDROT13SOLUTION OMIT/
+# * Solution
+# 
+# .code _code/rot13.go /STARTROT13SOLUTION OMIT/,/ENDROT13SOLUTION OMIT/
 
 * Polymorphism
 
@@ -2003,17 +2003,17 @@ Then read and print 10 values from the channel. It should be the numbers 1, 2, 3
 
 The documentation for `Tree` can be found [[https://godoc.org/golang.org/x/tour/tree#Tree][here]].
 
-* Solution
-
-.code _code/btree.go /STARTWALK/,/ENDWALK/
-
-* Solution
-
-.code _code/btree.go /STARTSAME/,/ENDSAME/
-
-* Solution
-
-.play _code/btree.go /^func main/,/^}/
+# * Solution
+# 
+# .code _code/btree.go /STARTWALK/,/ENDWALK/
+# 
+# * Solution
+# 
+# .code _code/btree.go /STARTSAME/,/ENDSAME/
+# 
+# * Solution
+# 
+# .play _code/btree.go /^func main/,/^}/
 
 
 * 
@@ -2032,17 +2032,17 @@ We need to tell the 2 `Walk` goroutines that their services are no longer requir
 
 This can be done with a `quit` channel.
 
-* Solution
-
-.code _code/btree-noleak.go /STARTWALK/,/ENDWALK/
-
-* Solution
-
-.code _code/btree-noleak.go /STARTSAME/,/ENDSAME/
-
-* Solution
-
-.play _code/btree-noleak.go /^func main/,/^}/
+# * Solution
+# 
+# .code _code/btree-noleak.go /STARTWALK/,/ENDWALK/
+# 
+# * Solution
+# 
+# .code _code/btree-noleak.go /STARTSAME/,/ENDSAME/
+# 
+# * Solution
+# 
+# .play _code/btree-noleak.go /^func main/,/^}/
 
 * Resources
 

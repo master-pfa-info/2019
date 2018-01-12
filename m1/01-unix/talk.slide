@@ -490,9 +490,24 @@ The `.pdb` extension indicates that these are in Proteing Data Bank format, a si
 
 * 
 
+First, we need to download all of this data.
+This can be done from, either:
+
+.link https://github.com/master-pfa-info/2017/blob/master/testdata/shell-novice-data.zip
+.link https://cern.ch/binet/master-pfa-info/2017/shell-novice-data.zip
+
+Save it somewhere (probably insider a directory under `$HOME/M_username/` so it won't be automatically removed by the UCA bots)
+and then:
+
+ $> unzip shell-novice-data.zip
+ $> ls data-shell/molecules
+ cubane.pdb  ethane.pdb  methane.pdb  octane.pdb  pentane.pdb  propane.pdb
+
+* 
+
 Let's go into that directory with `cd` and run the command:
 
- $> cd molecules
+ $> cd data-shell/molecules
  $> wc *.pdb
   20  156 1158 cubane.pdb
   12   84  622 ethane.pdb

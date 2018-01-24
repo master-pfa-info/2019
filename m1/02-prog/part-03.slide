@@ -134,6 +134,36 @@ What does happen if you try to access `sli[3]` ?
 # .play _code/sli.go
 
 
+* Maps
+
+* Maps
+
+Maps in Go are associative containers.
+They associate a key, with a value.
+Their size is not necessarily known at compile time and can change during the execution of the program.
+
+ var a map[string]int             // a map with keys of type string and values int
+ var b = map[string]int{"1": 1}   // a map with 1 element
+ var c = make(map[string]int)     // a map with an initial capacity of 0
+ var d = make(map[string]int, 10) // a map with an initial capacity of 10
+
+`make` is a builtin function of [[https://golang.org][Go]] that allocates the needed memory to hold the requested number of elements of the given type:
+
+ m := make(map[K]V, nelemts)
+
+* 
+
+Element access and modification are performed like so:
+
+ m := map[string]int{"zero": 0, "one": 1}
+ e1 := m["zero"] // value == 0
+ size := len(m)  // ==2
+ a["two"] = 2
+
+Deleting an element:
+
+ delete(m, "zero")
+
 * Resources
 
 .link https://golang-book.com

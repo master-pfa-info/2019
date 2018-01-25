@@ -79,9 +79,9 @@ Try different values of `x` and `y`:
 - `x=10.0`, `y=5.0`
 - `x=10.0`, `y=0.0`
 
-# * Solution
-# 
-# .play _code/fadd.go
+## * Solution
+## 
+## .play _code/fadd.go
 
 * 
 
@@ -90,9 +90,9 @@ Except that you should implement it using `fmul` and `fadd`.
 
 Display the result of `fma(x,y,2.0)`.
 
-# * Solution
-# 
-# .play _code/fma.go
+## * Solution
+## 
+## .play _code/fma.go
 
 
 * Resources

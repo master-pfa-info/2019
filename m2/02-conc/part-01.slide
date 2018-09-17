@@ -1,0 +1,424 @@
+Introduction to concurrency programming
+Master 2
+
+Sebastien Binet
+CNRS/IN2P3/LPC-Clermont
+sebastien.binet@clermont.in2p3.fr
+
+* Concurrency programming
+
+* Interlude: Sequential, Concurrent & Parallel pizzas
+
+* Pizza recipe
+
+(*Disclaimer:* don't ever eat any pizza prepared or cooked by me.)
+
+How to prepare a (sequential) pizza?
+
+.code _code/make-pizza.f
+
+Estimated time (1 chef, 1 pizza):
+
+  xx-oooo-xxx-oo-###
+
+How to make this faster?
+
+* (Sequential) Pizza recipe
+ 
+Tasks:
+
+- wash tomatoes and onions
+- cut tomatoes, onions
+- prepare pizza dough
+- put tomato sauce on top of pizza dough
+- toppings: put tomatoes, onions, ham and mozarella
+- (pre-)heat oven, bake
+- (cut, then eat)
+
+Estimated time (1 chef, 1 pizza):
+
+  xx-oooo-xxx-oo-###
+
+* Concurrent pizzas - Parallel pizzas
+
+Estimated time (1 chef, 1 kitchen, 2 pizzas):
+
+  xx-oooo-xxx-oo-###-xx-oooo-xxx-oo-###
+
+Estimated time (1 chef, 2 kitchens, 2 pizzas):
+
+  xx-oooo-xxx-oo+###
+                +xx-oooo-xxx-oo-###
+
+Estimated time (2 chefs, 1 kitchen, 2 pizzas):
+
+  xx-xxx-+-xx-xxx-+
+         +###     +###
+  oooo-oo+-oooo-oo+
+
+Estimated time (2 chefs, 2 kitchens, 2 pizzas):
+
+  xx-oooo-xxx-oo-###
+  xx-oooo-xxx-oo-###
+
+* Interlude: concurrency & parallelism
+
+- *Concurrency* is about _dealing_ with lots of things at once.
+- *Parallelism* is about _doing_ lots of things at once.
+- Not the same, but related.
+- Concurrency is about _structure_, parallelism is about _execution_.
+
+.image _figs/conc-para.png 200 600
+
+Concurrency is a way to structure a program by breaking it into pieces that can be executed independently.
+Communication is the means to coordinate the independent executions.
+
+* Concurrency vs Parallelism
+
+Concurrency is about dealing with lots of things at once.
+Parallelism is about doing lots of things at once.
+
+Concurrency is about (program) *structure*.
+Parallelism is about (program) *execution*.
+
+.image _figs/conc-vs-par-prog.png 300 _
+
+Concurrency is *not* parallelism, it's better :)
+
+* Concurrency plus communication
+
+Concurrency is a way to structure a program by breaking it into pieces that can be executed independently.
+
+Communication is the means to coordinate the independent executions.
+
+This is the Go model and (like Erlang and others) it's based on CSP:
+
+C. A. R. Hoare: Communicating Sequential Processes (CACM 1978)
+
+* Concurrency: basic examples
+
+* A boring function
+
+We need an example to show the interesting properties of the concurrency primitives.
+To avoid distraction, we make it a boring example.
+
+.code _code/boring.go /START/,/STOP/
+
+* Slightly less boring
+
+Make the intervals between messages unpredictable (still under a second).
+
+.code _code/lessboring.go /START/,/STOP/
+
+* Running it
+
+The boring function runs on forever, like a boring party guest.
+
+.play _code/lessboring.go /^func.main/,$
+
+* Ignoring it
+
+The `go` statement runs the function as usual, but doesn't make the caller wait.
+
+It launches a goroutine.
+
+The functionality is analogous to the `&` on the end of a shell command.
+
+.play _code/goboring.go 1,/^}/
+
+
+* Ignoring it a little less
+
+When `main` returns, the program exits and takes the boring function down with it.
+
+We can hang around a little, and on the way show that both main and the launched goroutine are running.
+
+.play _code/waitgoboring.go /func.main/,/^}/
+
+* Goroutines
+
+What is a goroutine? It's an independently executing function, launched by a go statement.
+
+It has its own call stack, which grows and shrinks as required.
+
+It's very cheap. It's practical to have thousands, even hundreds of thousands of goroutines.
+
+It's not a thread.
+
+There might be only one thread in a program with thousands of goroutines.
+
+Instead, goroutines are multiplexed dynamically onto threads as needed to keep all the goroutines running.
+
+But if you think of it as a very cheap thread, you won't be far off.
+
+* Communication
+
+Our boring examples cheated: the main function couldn't see the output from the other goroutine.
+
+It was just printed to the screen, where we pretended we saw a conversation.
+
+Real conversations require communication.
+
+* Channels
+
+A channel in Go provides a connection between two goroutines, allowing them to communicate.
+
+.code _code/helpers.go /START1/,/STOP1/
+.code _code/helpers.go /START2/,/STOP2/
+.code _code/helpers.go /START3/,/STOP3/
+
+* Using channels
+
+A channel connects the main and boring goroutines so they can communicate.
+
+.play _code/changoboring.go /START1/,/STOP1/
+.code _code/changoboring.go /START2/,/STOP2/
+
+* Synchronization
+
+When the main function executes <–c, it will wait for a value to be sent.
+
+Similarly, when the boring function executes c <– value, it waits for a receiver to be ready.
+
+A sender and receiver must both be ready to play their part in the communication. Otherwise we wait until they are.
+
+Thus channels both communicate and synchronize.
+
+* The Go approach
+
+Don't communicate by sharing memory, share memory by communicating.
+
+* "Patterns"
+
+* Generator: function that returns a channel
+
+Channels are first-class values, just like strings or integers.
+
+.play _code/generatorboring.go /START1/,/STOP1/
+.code _code/generatorboring.go /START2/,/STOP2/
+
+* Channels as a handle on a service
+
+Our boring function returns a channel that lets us communicate with the boring service it provides.
+
+We can have more instances of the service.
+
+.play _code/generator2boring.go /START1/,/STOP1/
+
+* Multiplexing
+
+These programs make Joe and Ann count in lockstep.
+We can instead use a fan-in function to let whosoever is ready talk.
+
+.code _code/faninboring.go /START3/,/STOP3/
+.play _code/faninboring.go /START1/,/STOP1/
+
+* Fan-in
+
+.image _figs/gophermegaphones.jpg
+
+* Restoring sequencing
+
+Send a channel on a channel, making goroutine wait its turn.
+
+Receive all messages, then enable them again by sending on a private channel.
+
+First we define a message type that contains a channel for the reply.
+
+.code _code/sequenceboring.go /START0/,/STOP0/
+
+* Restoring sequencing.
+
+Each speaker must wait for a go-ahead.
+
+.code _code/sequenceboring.go /START1/,/STOP1/
+.code _code/sequenceboring.go /START2/,/STOP2/
+.play _code/sequenceboring.go /START3/,/STOP3/
+
+* Select
+
+A control structure unique to concurrency.
+
+The reason channels and goroutines are built into the language.
+
+* Select
+
+The select statement provides another way to handle multiple channels.
+It's like a switch, but each case is a communication:
+
+- All channels are evaluated.
+- Selection blocks until one communication can proceed, which then does.
+- If multiple can proceed, select chooses pseudo-randomly.
+- A default clause, if present, executes immediately if no channel is ready.
+
+.code _code/select.go /START0/,/STOP0/
+
+* Fan-in again
+
+Rewrite our original fanIn function. Only one goroutine is needed. Old:
+
+.code _code/faninboring.go /START3/,/STOP3/
+
+* Fan-in using select
+
+Rewrite our original fanIn function. Only one goroutine is needed. New:
+
+.play _code/selectboring.go /START3/,/STOP3/
+
+* Timeout using select
+
+The time.After function returns a channel that blocks for the specified duration.
+After the interval, the channel delivers the current time, once.
+
+.play _code/timeout.go /START1/,/STOP1/
+
+* Timeout for whole conversation using select
+
+Create the timer once, outside the loop, to time out the entire conversation.
+(In the previous program, we had a timeout for each message.)
+
+.play _code/timeoutall.go /START1/,/STOP1/
+
+
+* Quit channel
+
+We can turn this around and tell Joe to stop when we're tired of listening to him.
+
+.code _code/quit.go /START1/,/STOP1/
+.play _code/quit.go /START2/,/STOP2/
+
+
+* Receive on quit channel
+
+How do we know it's finished? Wait for it to tell us it's done: receive on the quit channel
+
+.code _code/rcvquit.go /START1/,/STOP1/
+.play _code/rcvquit.go /START2/,/STOP2/
+
+* Daisy-chain
+
+.play _code/daisy.go /func/,$
+
+* Chinese whispers, gopher style
+
+.image _figs/gophereartrumpet.jpg
+
+* Conclusions
+
+Goroutines and channels make it easy to express complex operations dealing with:
+
+- multiple inputs
+- multiple outputs
+- timeouts
+- failure
+
+And they're fun to use.
+
+* Exercize: equivalent binary trees
+
+There can be many different binary trees with the same sequence of values stored at the leaves. For example, here are two binary trees storing the sequence 1, 1, 2, 3, 5, 8, 13.
+
+.image _figs/tree.png
+
+A function to check whether two binary trees store the same sequence is quite complex in most languages. We'll use Go's concurrency and channels to write a simple solution.
+
+* 
+
+This example uses the `"golang.org/x/tour/tree"` package, which defines the type:
+
+ type Tree struct {
+    Left  *Tree
+    Value int
+    Right *Tree
+ }
+
+We need to install it.
+In a normal setup, we'd just have to do:
+
+ $> go get golang.org/x/tour/tree
+
+but, in the UCA rooms (and because of the proxy) we'll have to do instead:
+
+ $> cd ~/go/src
+ $> git clone --depth=5 https://github.com/golang/tour golang.org/x/tour
+
+* 
+
+Let's create the skeleton for our binary-tree exercize `~/go/src/btree/main.go`:
+
+.code _code/btree-start.go
+
+* 
+
+- Implement the `Walk` function.
+
+- Test the `Walk` function.
+
+The function `tree.New(k)` constructs a randomly-structured binary tree holding the values `k`, `2k`, `3k`, ..., `10k`.
+
+Create a new channel `ch` and kick off the walker:
+
+ go Walk(tree.New(1), ch)
+
+* 
+
+Then read and print 10 values from the channel. It should be the numbers 1, 2, 3, ..., 10.
+
+
+- Implement the `Same` function using `Walk` to determine whether `t1` and `t2` store the same values.
+
+- Test the `Same` function.
+
+`Same(tree.New(1),` `tree.New(1))` should return `true`, and `Same(tree.New(1),` `tree.New(2))` should return `false`.
+
+The documentation for `Tree` can be found [[https://godoc.org/golang.org/x/tour/tree#Tree][here]].
+
+# * Solution
+# 
+# .code _code/btree.go /STARTWALK/,/ENDWALK/
+# 
+# * Solution
+# 
+# .code _code/btree.go /STARTSAME/,/ENDSAME/
+# 
+# * Solution
+# 
+# .play _code/btree.go /^func main/,/^}/
+
+
+* 
+
+Actually, the presented solution contains a bug...
+When the 2 trees don't have the same length, `Same` will return early:
+
+.code _code/btree.go /STARTSAME/,/ENDSAME/ HLxxx
+
+This will leave one of the 2 `Walk` goroutines waiting to send its values over the channel.
+
+* 
+
+We need to fix that.
+We need to tell the 2 `Walk` goroutines that their services are no longer required.
+
+This can be done with a `quit` channel.
+
+# * Solution
+# 
+# .code _code/btree-noleak.go /STARTWALK/,/ENDWALK/
+# 
+# * Solution
+# 
+# .code _code/btree-noleak.go /STARTSAME/,/ENDSAME/
+# 
+# * Solution
+# 
+# .play _code/btree-noleak.go /^func main/,/^}/
+
+* Resources
+
+.link https://golang-book.com
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp01_intro.pdf
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp02_oo.pdf
+.link https://tour.golang.org
+.link https://www.golangbootcamp.com/book
+

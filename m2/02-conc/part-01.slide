@@ -1,11 +1,73 @@
-Introduction to concurrency programming
+Introduction to concurrent programming
 Master 2
 
 Sebastien Binet
 CNRS/IN2P3/LPC-Clermont
 sebastien.binet@clermont.in2p3.fr
 
-* Concurrency programming
+* Concurrent programming
+
+* Parallel programming
+
+Parallel programming is hard.
+Parallel programming is hard, also in `Python`.
+Parallel programming is harder in `C++`.
+
+Actually, why do we have to do *parallel* programming ?
+
+* Moore's law
+
+.image _figs/cpu-free-lunch.png _ 550
+
+* The hardware/software contract
+
+.image _figs/par-prog-old-days.png _ 850
+
+* 
+
+.image _figs/par-prog-power.png _ 850
+
+* 
+
+.image _figs/par-prog-cores.png _ 850
+
+* Free lunch is over
+
+.image _figs/head-on.png _ 900
+
+* Raining transistors
+
+- Frequency has plateaued
+- *But* number of transistors is still following (more or less) Moore's Law
+
+What can we do with them ?
+
+* Hardware diversity: basic building blocks
+
+.image _figs/par-prog-building-blocks.png
+
+* Hardware diversity: combining building blocks
+
+.image _figs/par-prog-heterogeneous.png
+
+* Hardware diversity: CPUs
+
+.image _figs/par-prog-cpu.png _ 800
+
+* Parallel programming
+
+Ok, so we have to do parallel programming to properly utilize our new
+hardware...
+
+Actually, are we really sure we want to do *parallel* programming ?
+
+* Concurrency vs Parallelism
+
+_Concurrency:_ programming as the composition of independently executing processes/tasks.
+
+_Parallelism:_ programming as the simultaneous execution of (possibly related) computations.
+
+.image _figs/conc-vs-par.png 350 _
 
 * Interlude: Sequential, Concurrent & Parallel pizzas
 
@@ -85,7 +147,81 @@ Parallelism is about (program) *execution*.
 
 Concurrency is *not* parallelism, it's better :)
 
-* Concurrency plus communication
+* Concurrency vs Parallelism
+
+Concurrency and parallelism are related.
+Concurrency isn't parallelism (it's better!)
+
+Parallelizing an application is done by:
+
+- finding concurrency in the problem
+- exposing the concurrency in the source code
+- exploiting the exposed concurrency to complete the job in less time.
+
+.image _figs/conc-vs-par-decomp.png
+
+* Decomposition in parallel programs
+
+Every parallel program is based on concurrency
+i.e: tasks defined by an application that can run at the same time.
+
+*EVERY* parallel program requires a _task_decomposition_ and a _data_decomposition_:
+
+- Task decomposition: break the application down into a set of tasks that can execute concurrently.
+- Data decomposition: How must the data be broken down into chunks and associated with threads/processes to make the parallel program run efficiently.
+
+* Goldilocks
+
+Parallel approaches have to find the "sweet spot" between two extremes.
+
+Too fine grained:
+
+- Data: computation dominated by overhead
+- Tasks: context switching overhead
+
+Too coarse grained:
+
+- Data: load balancing problems
+- Tasks: insufficient items to keep processes busy
+
+* Amdhal's law
+
+Amdahl's law can be formulated in the following way:
+
+.html _figs/amdhal-def.svg
+
+where:
+
+- `S_latency` is the theoretical speedup of the execution of the whole task;
+- `s` is the *speedup* of the part of the task that benefits from improved system resources;
+- `p` is the *proportion* of execution time that the part benefiting from improved resources originally occupied.
+
+.link https://en.wikipedia.org/wiki/Amdahl%27s_law
+
+* 
+
+.image _figs/amdhal-law.png 500 _
+
+.html _figs/amdhal-def.svg
+
+* Parallel programming: multi-process vs multi-threaded
+
+Multi-process:
+
+- resource requirements are multiplied w/ nbr of process instances
+- (clever) use of `fork(2)` can mitigate this issue (but not in a `MT` environment)
+- one process can not corrupt the memory of another process
+- overhead of pushing data from one process to the other
+
+Multi-threaded:
+
+- small context switch times (wrt an OS' process)
+- automatic sharing of many hardware resources (memory, fds, sockets...)
+- thread-safety of external libraries?
+- one thread can corrupt another thread
+
+
+* Concurrency in Go
 
 Concurrency is a way to structure a program by breaking it into pieces that can be executed independently.
 
@@ -94,6 +230,9 @@ Communication is the means to coordinate the independent executions.
 This is the Go model and (like Erlang and others) it's based on CSP:
 
 C. A. R. Hoare: Communicating Sequential Processes (CACM 1978)
+
+.link https://en.wikipedia.org/wiki/Communicating_sequential_processes
+.link http://usingcsp.com/cspbook.pdf
 
 * Concurrency: basic examples
 
@@ -166,6 +305,7 @@ A channel in Go provides a connection between two goroutines, allowing them to c
 .code _code/helpers.go /START1/,/STOP1/
 .code _code/helpers.go /START2/,/STOP2/
 .code _code/helpers.go /START3/,/STOP3/
+.code _code/helpers.go /START4/,/STOP4/
 
 * Using channels
 

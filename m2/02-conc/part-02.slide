@@ -1,0 +1,280 @@
+Introduction to concurrent programming
+Master 2
+
+Sebastien Binet
+CNRS/IN2P3/LPC-Clermont
+sebastien.binet@clermont.in2p3.fr
+
+* Concurrent programming
+
+* Why is concurrency hard?
+
+- race conditions
+- atomicity
+- memory access synchronization
+- deadlocks, livelocks and starvation
+
+* Deadlock
+
+2 people at a door, trying to enter a room
+
+- Alice waits to let Barbara in
+- Barbara waits to let Alice in
+- ...
+
+There are a few conditions for deadlocks to arise.
+These conditions have been enumerated in 1971 by Edgar Coffman in a [[https://bit.ly/CoffmanDeadlocks][paper]]:
+
+- mutual exclusion
+- wait for a condition
+- no preemption
+- circular wait
+
+* Deadlock
+
+.code _code/deadlock.go /START-VALUE/,/STOP-VALUE/
+.play _code/deadlock.go /START-MAIN/,/STOP-MAIN/
+
+* Livelock
+
+2 people in a hallway:
+
+- Alice goes right to let Barbara pass through
+- Barbara goes left to let Alice pass through
+- Alice scoots left
+- Barbara also scoots left
+- ...
+
+Incidentally, this simple example demonstrates a very common reason *livelocks* happen: 2 or more concurrent processes attempting to prevent a *deadlock* to happen _without_ _coordination_.
+
+Livelocks are a subset of a larger set of problems called *starvation*.
+
+* Starvation
+
+ Starvation is any situation where a concurrent process cannot get all
+ the resources it needs to carry a task.
+
+Livelocks are a special case of starvation where all concurrent processes are starved _equally:_ no work is performed.
+
+Starvation is when one or more concurrent processes are greedy and prevent one or more concurrent processes from acquiring all the resources needed to perform their work as efficiently as possible (or at all.)
+
+_Example:_ people boarding a plane (or a train) trying to greedily store their luggages, preventing other people from getting at their seat.
+
+* Determining concurrency safety
+
+ // CalculatePi calculates digits of Pi between the begin and end place.
+ func CalculatePi(begin, end int64, pi *Pi)
+
+- how should I call this concurrently? (should I?)
+- am I supposed to concurrently invoke that function?
+- am I responsible for synchronizing the access to `*Pi`? (or does this type handle that under the covers?)
+
+* Determining concurrency safety
+
+Documentation does wonders...
+
+ // CalculatePi calculates digits of Pi between the begin and end place.
+ //
+ // Internally, CalculatePi will create FLOOR((end-begin)/2) concurrent processes
+ // which recursively call CalculatePi.
+ // Synchronization of writes to pi is handled internally by the Pi struct.
+ func CalculatePi(begin, end int64, pi *Pi)
+
+- who is responsible for the concurrency?
+- how is the problem space mapped onto concurrency primitives?
+- who is responsible for the synchronization?
+
+* Go's concurrency building blocks
+
+`sync` package:
+
+.link https://godoc.org/sync#WaitGroup sync.WaitGroup
+.link https://godoc.org/sync#Mutex sync.Mutex
+.link https://godoc.org/sync#RWMutex sync.RWMutex
+.link https://godoc.org/sync#Cond sync.Cond
+.link https://godoc.org/sync#Once sync.Once
+.link https://godoc.org/sync#Pool sync.Pool
+
+
+builtins:
+
+- channels + goroutines
+- `select`
+
+* Concurrency patterns in Go
+
+* Confinement
+
+We have already studied different options for safe operation when working with concurrent code:
+
+- synchronization primitives for sharing memory (_e.g.:_ [[https://godoc.org/sync#Mutex][sync.Mutex]])
+- synchronization via communicating (_e.g.:_ channels)
+
+But there are a couple of others:
+
+- immutable data
+- data protected by confinement.
+
+*Confinement:* ensuring information is only ever available from *one* concurrent process.
+When confinement is realized, a concurrent program is implicitly safe and no synchronization is required.
+
+* Confinement: ad hoc
+
+.play _code/confinement-ad-hoc.go /START/,/STOP/
+
+* Confinement: lexical
+
+.play _code/confinement-lexical.go /START/,/STOP/
+
+* Confinement: lexical - II
+
+.play _code/confinement-lexical-buf.go /START/,/STOP/
+
+Here `process` has only access to a subset of the whole `data` slice.
+Each `process` goroutine is given a different subset of the whole `data` slice.
+No need for synchronization of memory access or sharing data thru communication.
+
+* The for-select loop
+
+At its core, this idiom is simply:
+
+  for { // either an infinite loop, or range over something
+     select {
+     // do some work with channels
+     }
+  }
+
+_e.g.:_
+
+  // sending iteration variables out on a channel
+  for _, s := range []string{"a", "b", "c"} {
+      select {
+      case <-done:
+  	    return
+      case ch <- s:
+      }
+  }
+
+* for-select
+
+Looping infinitely, waiting to be stopped:
+
+  for {
+      select {
+      case <-done:
+          return
+      default:
+      }
+  
+      // do non-preemptable work
+  }
+
+Or:
+
+  for {
+      select {
+      case <-done:
+          return
+      default:
+          // do non-preemptable work
+      }
+  }
+
+
+* Goroutine leaks
+
+Goroutines are _cheap_ and easy to create, but they aren't *free*.
+They _do_ _cost_ resources that should be reclaimed at some point during the execution of a program.
+
+Goroutines are not garbage collected by the runtime: we need to make sure they are properly cleaned up.
+
+A Goroutine is terminated:
+
+- when it has completed its work.
+- when it cannot continue its work due to to an unrecoverable error.
+- when it's told to stop working.
+
+The first 2 cases come _"for_ _free":_ they are just part of the algorithm being implemented.
+
+The last one is about *work* *cancellation*.
+
+* Goroutine leaks
+
+.play _code/goroutine-leak.go /START/,/STOP/
+
+* Goroutine leaks -- fixed
+
+.code _code/goroutine-leak-fixed.go /START-WORK/,/STOP-WORK/
+
+* Goroutine leaks -- fixed
+
+.play _code/goroutine-leak-fixed.go /START-MAIN/,/STOP-MAIN/
+
+* Goroutine leaks
+
+.play _code/goroutine-wleak.go /START-MAIN/,/STOP-MAIN/
+
+Oops, this isn't displayed:
+
+ gen closure exited
+
+The goroutine is leaked. Try to fix it.
+
+## * Solution
+## 
+## .play _code/goroutine-wleak-fixed.go /START-MAIN/,/STOP-MAIN/
+## 
+
+* or-channel
+
+Use case: combine one or more `done` channels into a single `done` channel that closes if any of its component channels close.
+
+* 
+
+.code _code/or-chan.go /^func or/,/^}$/
+
+* 
+
+.play _code/or-chan.go /START/,/STOP/
+
+_Exercize:_ Modify the code to also display the number of goroutines being scheduled.
+
+* Error handling
+
+Error handling, especially in concurrent programs, can be difficult to get right.
+
+The most fundamental question when thinking about error handling is (whether in a concurrent program or not):
+
+ Who should be responsible for handling the error?
+
+One can bubble the error up the call stack, but at some point _somebody_ will have to deal with it.
+
+With concurrent programs, this question becomes a little bit more complex...
+
+* Example
+
+.code _code/err-handling.go /START-WORK/,/STOP-WORK/
+
+* 
+
+.play _code/err-handling.go /START-MAIN/,/STOP-MAIN/
+
+The goroutine displays the errors, hoping _somebody_ looks at the printout (and takes action.)
+That is not a robust way to deal with an error.
+
+How would you fix this?
+
+## * Solution
+## 
+## .code _code/err-handling-fixed.go /START-WORK/,/STOP-WORK/
+## 
+## * Solution
+## 
+## .play _code/err-handling-fixed.go /START-MAIN/,/STOP-MAIN/
+## 
+## Here, we've extracted the error handling from the producer goroutine and relocalized it where it makes more sense.
+## It's also where most of the useful context exists (so more intelligent decisions about what to do with the errors can take place.)
+
+* Pipelines
+
+

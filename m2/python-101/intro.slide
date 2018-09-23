@@ -1,0 +1,1213 @@
+Introduction to Python
+Master 2
+
+Sebastien Binet
+CNRS/IN2P3/LPC-Clermont
+sebastien.binet@clermont.in2p3.fr
+
+* Introduction
+
+* Introduction
+
+From [[https://python.org][Python.org]]:
+
+  Python is a dynamic object-oriented programming language that can be
+  used for many kinds of software development. It offers strong support
+  for integration with other languages and tools, comes with extensive
+  standard libraries, and can be learned in a few days.
+
+- Today: a few hours, so we'll touch on the main features to get you going
+
+Documentation:
+
+- the official `python` website: [[https://www.python.org]]
+- "Python Pocket Reference", Mark Lutz (O'Reilly)
+
+* Why should I know about Python?
+
+Python is used in all sorts of domains:
+
+- Science (HEP, Biology, Geology, ...)
+- Data Science
+- A.I., Deep Learning, ...
+- Engineering
+
+B/c it's a nice scripting language with access to heaps of libraries:
+
+- text processing, internet protocols, binary data massaging
+- scientific libraries too (PyROOT, SciPy, matplotlib, ...)
+- documentation is easy to find on the web
+- cross-platform, POSIX interface
+
+* Python: a multi-paradigm language
+
+- imperative
+- object oriented
+- functional (as in functional programming - _e.g._ like `LISP` or `Haskell`)
+- Mix-in
+- aspect oriented
+- actor-oriented, concurrency
+- ...
+
+* Python overview
+
+- Provides its own *interactive* *shell*
+- *Garbage* *Collected* (memory is managed for you)
+- whole programs can be run by:
+
+  $> python ./foo.py
+
+- learn by doing
+- incremental development: no lengthy edit-compile-run-debug cycle
+- make tiny changes and test them immediately
+- program state is not lost
+
+Dramatically reduces development time
+
+*But* Python is slow, compared to other (compiled) languages.
+This can be _mitigated_ by migrating the CPU intensive part(s) to C/C++/... and leveraged from `python`.
+
+* Customizing the python prompt
+
+Create the file `~/.pythonrc.py`:
+
+  ## for tab-completion
+  import rlcompleter, readline
+  readline.parse_and_bind("tab: complete")
+  readline.parse_and_bind("set show-all-if-ambiguous On")
+
+  ## for history
+  import os, atexit
+  f = os.path.join(os.environ["HOME"], ".python_history")
+  try: readline.read_history_file(f)
+  except IOError: pass
+  atexit.register(readline.write_history_file, f)
+
+* Customizing the python prompt - II
+
+Create the `$PYTHONSTARTUP` environment variable and make it point to that file:
+
+  $> export PYTHONSTARTUP=$HOME/.pythonrc.py
+
+You can put this in your `.login` or `.bashrc` file
+
+The file pointed at by the `$PYTHONSTARTUP` environment variable will be executed whenever you launch the interactive `python` interpreter.
+
+- or whenever you import the module named `user`:
+
+ >>> import user
+
+* Introspection
+
+a python program can ask interesting questions about its own state, and the objects it is manipulating:
+
+  >>> dir(), dir(some_variable)
+  >>> type(some_variable) # e.g.: type(42)
+  >>> isinstance(some_var, some_type)
+  ... # e.g. isinstance("foo", str)
+  >>> help(some_var) # e.g.: help(dict)
+
+* Docstrings
+
+`help(...)` accesses _documentation_ _strings_ of objects, functions and classes
+
+- any string literal appearing as the first item in the definition of a class, function, method or module is taken to be its _docstring_.
+
+  $> python
+  >>> help(str)
+  >>> help(object)
+
+* Modules
+
+- group functionality together
+- provide namespaces
+- means of extending python
+
+python standard library (`stdlib`) contains a *vast* collection of modules:
+
+- batteries included
+- [[https://docs.python.org/library/]]
+
+* Importing modules
+
+as simple as:
+
+  $> python
+  >>> import math
+  >>> import math, cmath
+  >>> import math as mmm
+  >>> from math import sin
+  >>> from math import *   ## frowned upon!
+
+  >>> help(math)           ## display the help on math
+  >>> dir(mmm)             ## content of 'm' (an alias of 'math')
+
+* Numerical types
+
+- `int`, `float` (like `double` in `C/C++`, or `float64` in [[https://golang.org][Go]])
+- `long`
+- `complex`: `1+1j`
+
+  >>> import sys
+  >>> a = sys.maxint
+  >>> b = a + 1
+  >>> print a, b
+  9223372036854775807 9223372036854775808
+  >>> print type(a), type(b)
+  <type 'int'> <type 'long'>
+
+* Python builtins
+
+- `list`: a *mutable* *sequence* of heterogeneous items
+- `tuple`: an *immutable* *sequence* of heterogeneous items
+- `str`: an *immutable* *sequence* of characters (homogeneous)
+- `dict`: a *hash-map* (association of (immutable) keys to values) (heterogeneous)
+- `set`: a *mutable* *sequence* of (unique) heterogenous items
+
+* Lists
+
+  >>> # the empty list
+  >>> a = []
+
+  >>> # a list with one element
+  >>> a = [42]
+
+  >>> # a 3-element list
+  >>> a = [5, 1+2j, 'hello']
+  
+  >>> # a list of lists
+  >>> a = [[1, '2'], [3,4], [5,6,7]]
+
+WRT other languages, ressembles `std::vector` or `array` more than `list`
+
+* Tuples
+
+  >>> # the empty tuple
+  >>> a = ()
+
+  >>> # a 1-element tuple
+  >>> a = (1,) # NOTE the comma !
+  
+  >>> # a 3-element tuple
+  >>> a = (1, 'hello', [1,2])
+  >>> b = 1, 'hello', [1,2]
+
+- the parentheses are not always required
+
+- tuples are *IMMUTABLE*
+
+* What does += do ? (for a list)
+
+  >>> l1 = [1,2,3]
+  >>> l2 = l1
+  >>> l2 == l1
+  True
+
+  >>> l2 is l1
+  True
+  
+  >>> l2 += [4,5]
+  >>> l1, l2
+  ([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
+  
+  >>> l2 == l1
+  True
+  
+  >>> l2 is l1
+  True
+
+* What does += do ? (for a tuple)
+
+  >>> t1 = (1, 2, 3)
+  >>> t2 = t1
+  >>> t2 == t1, t2 is t1
+  (True, True)
+
+  >>> t2 += (4, 5)
+  >>> t1, t2
+  ((1, 2, 3), (1, 2, 3, 4, 5))
+  
+  >>> t2 == t1, t2 is t1
+  (False, False)
+
+* What does += do ? (for an int)
+
+  >>> i1 = 0; i2 = i1
+  >>> i2 == i1, i2 is i1
+  (True, True)
+
+  >>> i2 += 1
+  >>> i1, i2
+  (0, 1)
+  
+  >>> i1 == i2, i1 is i2
+  (False, False)
+
+* Strings
+
+  >>> s = 'a string'
+  >>> s = "another string" # note double quotes
+  
+  >>> s = "a string with a ' in the middle"
+  >>> s = 'a string with a \' in the middle'
+  
+  >>> s = """a multi-line
+  ... string"""
+
+  >>> s = '''look, another
+  ... one'''
+
+
+Strings are *IMMUTABLE*.
+
+* Formatting strings
+
+With Python-2:
+
+  >>> print "%6.4f %4d" % (5.2, 200)
+  5.2000 200
+
+With Python-2 or Python-3:
+
+  >>> print("%6.4f %4d" % (5.2, 200))
+  5.2000 200
+  
+  >>> print("{0:6.4f} {1:4d}".format(5.2, 200))
+  5.2000  200
+
+  >>> print("{:6.4f} {:4d}".format(5.2, 200))
+  5.2000  200
+
+  >>> 10 * "#"
+  '##########'
+
+For more:
+
+- [[https://docs.python.org/3/library/string.html]]
+
+* Unpacking tuples
+
+  >>> a,b,c = 1,2,3
+  >>> a,b
+  (1, 2)
+
+  >>> a,b = b,a
+  >>> a,b
+  (2, 1)
+  
+  >>> w = 5,6,7
+  >>> x,y,z = w
+  >>> x
+  5
+
+- one can easily return multiple values from functions using tuples
+- "output parameters" are frown upon (deemed _un-pythonic_)
+
+* Indexing and slicing
+
+  >>> a = list(range(10))
+  >>> a
+  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+  >>> a[3]
+  3
+
+  >>> a[-3]
+  7
+
+  >>> a[3:6]
+  [3, 4, 5]
+
+  >>> a[3:-3]
+  [3, 4, 5, 6]
+
+  >>> a[6:3]
+  []
+
+
+* Indexing and slicing - II
+
+  >>> a = list(range(10))
+  >>> a
+  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  
+  >>> a[:6]
+  [0, 1, 2, 3, 4, 5]
+  
+  >>> a[0:6:2]
+  [0, 2, 4]
+  
+  >>> a[2:4] = ['X']
+  >>> a
+  [0, 1, 'X', 4, 5, 6, 7, 8, 9]
+  
+  >>> a[-1:] = 'abc'
+  >>> a
+  [0, 1, 'X', 4, 5, 6, 7, 8, 'a', 'b', 'c']
+
+* Sequence operations
+
+  >>> a = list(range(4))
+  >>> a + [9,8,7]
+  [0, 1, 2, 3, 9, 8, 7]
+
+  >>> a * 4
+  [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3]
+
+  >>> b = [[0]*4]*4
+  >>> b
+  [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+
+* Sequence operations - II
+  
+  >>> a = list(range(4))
+
+  >>> 3 in a, 3 not in a
+  (True, False)
+  
+  >>> max([1,'x',2,'a'])
+  'x'
+  
+  >>> a+= [9]; a
+  [0, 1, 2, 3, 9]
+  
+  >>> a.append(7); a
+  [0, 1, 2, 3, 9, 7]
+  
+  >>> del a[0]; len(a)
+  5
+
+* Dictionaries
+
+Dictionaries are hash-tables: a bit like a fast `C++` `std::map` or like [[https://golang.org][Go]]'s `map`.
+
+  >>> type({}), type(dict())
+  (<type 'dict'>, <type 'dict'>)
+
+  >>> d = {1: 'eins'}
+  >>> d['zwei'] = 2
+  >>> d
+  {1: 'eins', 'zwei': 2}
+  
+  >>> len(d)
+  2
+  
+  >>> 1 in d, "eins" in d, 1 not in d, "zwei" in d
+  (True, False, False, True)
+  
+  >>> del d[1]; d
+  {'zwei': 2}
+
+* Dictionaries
+
+  >>> squares = {2:4, 3:9, 4:16, 5:25}
+  >>> len(squares)
+  4
+
+  >>> squares[6] = 6**2
+  >>> squares[-1] = 1
+  >>> squares[1] = 1
+  >>> squares.keys()
+  dict_keys([2, 3, 4, 5, 6, -1])
+  
+  >>> squares.values()
+  dict_values([1, 4, 9, 16, 25, 36, 1])
+  
+  >>> squares.items()
+  dict_items[(1, 1), (2, 4), (3, 9), (4, 16), (5, 25), (6, 36), (-1, 1)])
+
+- keys *MUST* be immutable
+- dictionaries are *un-ordered*
+
+* Sets
+
+  >>> s = set([2,2,1,4,4,3,3])
+  >>> len(s)
+  4
+
+  >>> s = {1, 2, 3, 3, 4, 4} # in python >= 2.7
+  >>> a = set([1,2,3])
+  >>> b = set([2,3,4])
+  >>> a | b
+  {1, 2, 3, 4}
+  
+  >>> a ^ b
+  {1, 4}
+  
+  >>> a & b
+  {2, 3}
+
+* Indentation
+
+- Python uses indentation to delimit blocks
+- no curly braces `{}`
+
+  >>> if True:
+  ... print 'this'
+  ... print 'that'
+  ... else:
+  ... print 'the other'
+
+- note that blocks start with colons `:`
+- there is a special empty block: `pass`
+
+  >>> if True:
+  ... pass
+  ... else:
+  ... print "False"
+
+* Indentation - II
+
+- indentation is the *only* block delimitation mechanism
+- indentation is ignored inside brackets and on continued lines
+- you can use tabs or spaces
+
+- *don't* *mix* the two (as that is likely to make things wrong)
+- use your editor's support for indenting python
+
+- emacs has great support for python
+- vi(m) too
+
+* Boolean contexts
+
+  False
+
+- numbers equal to zero
+- empty sequences and dictionaries
+- the object `None`
+- the object `False`
+
+  True
+
+- everything else
+- the object `True`
+
+User defined types can determine their own interpretation in boolean contexts
+
+* Loops and control structures
+
+  >>> epsilon = 1.0
+  >>> while 1 + epsilon > 1:
+  ... epsilon /= 2
+  ... print(epsilon)
+
+  >>> for c in 'hello':
+  ... print(c)
+  
+  >>> for i in range(10):
+  ... print(i)
+
+- `for`-loops work with *any* iterable
+
+_Note:_ in python-2, `range` was spelled `xrange`.
+
+* Loops and control structures - II
+
+  break
+  continue
+  else
+
+Both `while` and `for` loops have an optional else clause, the body of which is executed only if the loop runs to completion, without being cut short by:
+
+- `break`
+- `return`: returning from the containing function within the body of the loop
+- `raise`: - an exception being raised in the body of the loop but not being handled
+
+* Functions
+
+  >>> def my_function(arg1, arg2):
+  ... """optional docstring."""
+  ... # your implementation goes here
+  ... return arg1 + arg2 # optional
+
+  >>> def returns_nothing():
+  ... pass
+  
+  >>> def returns_none():
+  ... return None
+  
+  >>> def also_returns_none():
+  ... return
+
+* Multiple return values
+
+  >>> def powers(n):
+  ... return n, n**2, n**3
+
+  >>> v = powers(2)
+  >>> v1, v2, v3 = powers(2)
+  
+  >>> v[0], v[1], v[2]
+  (2, 4, 8)
+
+- this function returns 3 values all at once
+- the values are packed into a tuple
+- you can collect all the returned values at once, in a tuple
+- or unpack the tuple at the call site, and receive each value in its own variable
+
+* Multiple return values
+
+  >>> def powers(n):
+  ... return n, n**2, n**3
+
+  >>> v = powers(2)
+  >>> v1, v2, v3 = powers(2)
+  
+  >>> v[0], v[1], v[2]
+  (2, 4, 8)
+
+- or even capture the value after the facts (*only* in the *interpreter*):
+
+  >>> powers(2)
+  (2, 4, 8)
+  
+  >>> v = _
+
+  >>> v
+  (2, 4, 8)
+
+* First class objects
+
+Almost everything (functions, classes, modules. . . ) in python is a first-class object
+
+  >>> import math
+  >>> trig = math.sin, math.cos, math.tan
+  >>> for fn in trig:
+  ... print (fn, fn(math.pi/3))
+  <built-in function sin> 0.866025403784
+  <built-in function cos> 0.5
+  <built-in function tan> 1.73205080757
+
+notice the important difference b/w:
+
+- a *function* and,
+- the result of *calling* that function
+
+* Nested definitions
+
+  >>> def make_adder(n):
+  ...     """a fct which creates and returns a fct"""
+  ...     def adder(x):
+  ...         return n+x
+  ...     return adder
+  ...
+
+  >>> add3 = make_adder(3)
+  >>> add9 = make_adder(9)
+  
+  >>> print (add3(4), add9(4))
+  7 13
+  
+  >>> d = {3: add3, 9: add9, 5: make_adder(5)}
+  >>> d[5](5)
+  10
+
+- each different instance of adder carries around its own version of n
+- adder is *lexical* *closure*. (we will re-visit this later on)
+
+* Unqualified name search
+
+- *LnGB*: Local (nested), Global, Builtins
+
+- Prior to python 2.1, enclosing function scopes were not searched
+- so the lookup rule was simply LGB
+
+* Argument passing
+
+Be sure to understand a given function before trying out the next
+
+  >>> def one(*args):
+  ...     print(args)
+
+  >>> one(0)
+  >>> one(0, 1, 2)
+  
+  >>> def two(b=1, c=2):
+  ...     print("b=",b,"c=",c)
+
+  >>> two(0, 1)
+  >>> two()
+  >>> two(b=2, c=3)
+  >>> two(c=2, b=3)
+
+* Argument passing
+
+  >>> def three(*args, **kwds):
+  ...     print ("args=",args)
+  ...     print ("kwds=",kwds)
+
+  >>> three(0)
+  >>> three(0, 1)
+  >>> three(0, 1, a=1, b=2)
+  >>> three(a=1, b=2)
+
+* Argument passing
+
+  >>> def four(a, b=1, *args, **kwds):
+  ...     print("a=",a, "b=",b)
+  ...     print("args=",args)
+  ...     print("kwds=",kwds)
+
+  >>> four(0)
+  >>> four(0, 2)
+  >>> four(0, 2, 3, 4)
+  >>> four(0, 2, 3, 4, c=2, d=3)
+  >>> four(0, b=2, c=2)
+  >>> four(a=2, b=42, zzz=666)
+  >>> four(b=2, a=32)
+
+* Gotcha!!
+
+  >>> def f(a, L=[]):
+  ...     L.append(a)
+  ...     return L
+  
+  >>> f(1)
+  [1]
+  
+  >>> f(2)
+  [1, 2]
+
+  >>> f(3)
+  [1, 2, 3]
+
+Default values are evaluated *ONCE*.
+
+Prefer this way of passing mutable default values:
+
+  >>> def f(a, L=None):
+  ...     if L is None:
+  ...         L = []
+  ...     L.append(a)
+  ...     return L
+
+* Garbage collection
+
+Allocating and freeing memory is *not* *your* *problem* (when using python.)
+
+- no more missing `delete`
+- no more one-too-many `delete`
+
+Python (actually, CPython) uses reference counting:
+
+- when an object is not used by anybody anymore (_e.g._ reference count `==` 0), it is deleted for you
+
+The garbage collector can detect "circular garbage".
+
+* File I/O
+
+  >>> f = open('myfile', 'w')
+  >>> print(1, 2, 3, 4, file=f)
+  >>> f.write('5 6 7 8')
+  >>> f.flush()                  # commits buffers on disk
+  >>> f = open('myfile', 'r')
+  >>> for line in f:
+  ...   print(line)
+  ...
+  1 2 3 4
+
+  5 6 7 8
+
+  >>> f.seek(0)                  # rewind to beginning of file
+  >>> for line in f:
+  ...   print (repr(line))
+
+  '1 2 3 4\n'
+  '5 6 7 8'
+  >>> f.close()
+
+* Sorting
+
+Make a list of all usernames in `/etc/passwd`, stored by `userid`
+
+- that's the number, not the name
+- each line is of the form:
+
+  username:passwd:uid:gid:userid-info:homedir:shell
+
+- make sure you sort the numbers as integers, not as strings
+- constructors of the built-in types act as type converters (no, this is not casting)
+
+_hints:_
+
+- look-up the documentation of _string_ for the split-ting part
+- look-up the documentation of _list_ for the sort-ing part
+
+* Solution
+
+  >>> data = []
+  >>> for line in open('/etc/passwd', mode='r'):
+  ...   line = line.split(':')
+  ...   usrname, uid = line[0], int(line[2])
+  ...   data.append((uid,usrname))
+  ...
+  >>> def uid_cmp(x):
+  ...     """a fct to compare entries of data"""
+  ...     x_uid = x[0]
+  ...     return x_uid
+  ...
+  >>> data.sort(key=uid_cmp)
+  >>> data[:5]
+  [(0, 'root'), (1, 'bin'), (2, 'daemon'), (3, 'adm'), (4, 'lp')]
+
+* Lambda functions - higher-order functions
+
+  >>> lambda a,b,c: a*b+c
+  <function <lambda> at 0x213f938>
+
+  >>> (lambda a,b,c: a*b+c)(2,3,4)
+  10
+  
+  >>> fct = lambda a,b,c: a*b+c
+  >>> fct(2,3,4)
+  10
+  
+  >>> map(lambda a: a+1, [1,2,3,4])
+  [2, 3, 4, 5]
+  
+  >>> filter(lambda x: x%2, range(20))
+  [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
+  
+  >>> reduce(lambda a,b: a+b, range(10))
+  45
+  
+  >>> import operator as op
+  >>> reduce(op.add, range(10)), sum(range(10))
+  (45, 45)
+
+* Summing exercize
+
+- given a file with an arbitrary number of numbers on each line
+- make a list of the sums of the numbers on each line
+- (later: allow non-numbers to appear in your file, and ignore them in the sum)
+
+input file:
+
+  $ curl -O -L https://cern.ch/binet/python-101/nbrs-per-line.txt
+
+* Solution
+
+  >>> sums = []
+  >>> for line in open("nbrs-per-line.txt"):
+  ...     line = line.split()
+  ...     nbrs = []
+  ...     for n in line:
+  ...         nbrs.append(float(n))
+  ...     sums.append(sum(nbrs))
+  ...
+  >>> print(sums[:4])
+  [5.4397909088405, 0.110404610268, 2.281101550502, 5.6733460483622]
+
+* Solution
+
+  >>> import operator as op
+  >>> import functools as ft
+  >>> sums = []
+  >>> for line in open("nbrs-per-line.txt"):
+  ...     sums.append(ft.reduce(op.add, map(float, line.split())))
+  ...
+  >>> print(sums[:4])
+  [5.4397909088405, 0.110404610268, 2.281101550502, 5.6733460483622]
+
+* Division
+
+  >>> 3/2, 3//2, 3.0/2.0, 3.0//2.0
+  (1.5, 1, 1.5, 1.0)
+
+  >>> 4/2
+  2.0
+
+* Exceptions
+
+  >>> try:
+  ...     # code body
+  ... except ArithmeticError:
+  ...     # what to do if arithmetic error
+  ... except IndexError as the_exception:
+  ...     # the_exception refers to the exception
+  ...     # in this block
+  ... except:
+  ...     # what to do for ANY other exception
+  ...     # you shouldn't use that form too much...
+  ... else: # optional
+  ...     # what to do if no exception were raised
+
+* Exceptions
+
+  >>> try:
+  ...     # code body
+  ... finally:
+  ...     # what to do ALWAYS
+
+Before python 2.5, `except` and `finally` were mutually exclusive in a single `try`.
+
+- derive your own exceptions from the built-in `Exception`
+- to see what built-in exceptions exist, look into the [[https://docs.python.org/3/library/exceptions.html][exceptions]] module
+- raise exceptions with the `raise` keyword
+- the constructor of `Exception` accepts arguments, which are displayed in the printed representation of the exception
+
+* Raising exception
+
+  >>> raise OverflowError
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  OverflowError
+  
+  >>> raise OverflowError("Bath is full")
+  >>> e = OverflowError("Bath is full")
+  >>> raise e
+  
+  >>> try:
+  ...     # code body
+  ... except Exception as e:
+  ...     raise e
+  ... except Exception as e:
+  ...     raise # re-raise the same exception
+
+* Exception hierarchy
+
+The standard exceptions are organized in an inheritance hierarchy: _e.g._ `OverflowError` inherits from `ArithmeticError`.
+
+- allows you to catch a range of exceptions with a single statement
+- you can derive your own exceptions from any of the standard ones
+- it is good style to have each module define its own base exception
+
+  >>> OverflowError.__bases__
+  (<type 'ArithmeticError'>,)
+  >>> OverflowError.__mro__
+  (<class 'OverflowError'>,
+   <class 'ArithmeticError'>,
+   <class 'Exception'>,
+   <class 'BaseException'>,
+   <class 'object'>)
+
+* LBYL vs EAFP
+
+- Look Before You Leap
+
+  >>> if denominator == 0:
+  ...     print ("Oops")
+  ... else:
+  ...     print (numerator/denominator)
+
+- Easier to Ask for Forgiveness than Permission
+
+  >>> try:
+  ...     print (numerator/denominator)
+  ... except ZeroDivisionError:
+  ...     print ("Oops")
+
+- EAFP is the pythonic way
+
+time to revisit the sum exercize. . .
+
+* Another solution to the sum exercize
+
+  >>> import functools as ft
+  >>> import operator as op
+
+  >>> def float_or_zero(s):
+  ...     try:
+  ...         return float(s)
+  ...     except ValueError:
+  ...         return 0
+  
+  >>> sums = []
+  >>> for line in open("nbrs-per-line.txt"):
+  ...     sums.append(ft.reduce(
+  ...         op.add,
+  ...         map(float_or_zero, line.split())
+  ...     ))
+  
+  >>> sums[:4]
+  [5.4397909088405001, 0.110404610268, 2.281101550502, 5.6733460483622]
+
+* Interaction with the system
+
+  >>> import os
+  >>> import sys
+  >>> dir(...)
+  >>> help(...)
+
+* The 2-minute intro to Object Oriented programming
+
+Organizing the program in a way which emphasizes objects: the tangible or abstract entities which appear in your program
+
+- it is possible to program in an OO style in (almost) any language
+- some languages provide direct support for OOP
+- some try to make it unavoidable (e.g. Java)
+
+Typically, OOP support is based on:
+
+- *encapsulation:* interface "hides" implementation details
+- *polymorphism:* objects behave according to their types
+- *inheritance:* types share features
+
+* Classes
+
+  >>> class Counter(object):
+  ...     def __init__(self, start=0):
+  ...         self.count = start
+
+  ...     def up(self, n=1):
+  ...         self.count += n
+
+  ...     def down(self, n=1):
+  ...         self.count -= n
+  ...
+
+* 
+
+  >>> a = Counter(10)
+  >>> a.up(2)
+
+  >>> print(a)
+  <__main__.Counter instance at 0x21eaea8>
+
+  >>> print(Counter)
+  <class '__main__.Counter'>
+
+  >>> print (a.count)
+  12
+  
+  >>> print (Counter.count)
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  AttributeError: type object 'Counter' has no attribute 'count'
+  
+  >>> a.foo = 42
+  >>> print (a.foo)
+  42
+
+* Inheritance, operators
+
+  >>> class AddCounter(Counter):
+  ...   def __repr__(self):
+  ...       return 'AddCounter(%s)' % self.count
+  ...   def __add__(self, other):
+  ...       return AddCounter(self.count+other.count)
+  ...
+  >>> AddCounter(3) + AddCounter(4)
+  AddCounter(7)
+
+* Multiple inheritance
+
+  class A(object):
+      def __init__(self, a):
+          self.a = a
+          print ("A.__init__(a=%s)" % a)
+  
+  class B(object):
+      def __init__(self, b):
+          self.b = b
+          print ("B.__init__(b=%s)" % b)
+  
+  class C(A,B):
+      def __init__(self, a, b, c):
+          A.__init__(self, a)
+          B.__init__(self, b)
+          self.c = c
+          print ("C.__init__(a=%s b=%s c=%s)" % (
+                 self.a, self.b, self.c))
+
+* 
+
+  >>> c = C(1,2,3)
+  A.__init__(a=1)
+  B.__init__(b=2)
+  C.__init__(a=1 b=2 c=3)
+
+  >>> dir(c)
+  [ ..., '__doc__', '__init__', ...,  'a', 'b', 'c']
+
+* Privacy
+
+python does not enforce privacy by restricting access
+
+- *Convention:* names starting with an underscore (`_`), refer to objects you should not access directly, outside of their defining scope (`class` or `module`)
+- names starting (but not ending) with 2 underscores, will be mangled: intended as a protection against name clashes with subclasses
+- names which both start and end with 2 underscores are special names
+
+_e.g._ `__init__`, `__repr__`, `__add__`, `__iadd__`, ...
+
+* Polymorphism without inheritance
+
+- in statically typed languages, polymorphism is usually tightly coupled to inheritance (_note:_ that's not true for [[https://golang.org][Go]])
+- polymorphism in `python` does not depend on inheritance
+- inheritance is _NOT_ required for heterogeneous containers
+
+* Duck Typing
+
+  if it looks like a duck...
+  ... and quacks like a duck...
+  ... then it's a duck !
+
+- what the object can do, is far more important than its actual type
+- checking types in python is often the wrong thing to do
+- try to see whether an object can do what you want it to, rather than checking its type
+- you can't possibly know ALL types that are able to do what you want...
+- ... some of them might not have been written yet !
+- often, the simplest way to see whether an object can do what you want, is to try to get it to do it
+
+this is why EAFP is often better than LBYL in python.
+
+* Closures
+
+- closures group *functionality* and *state* together
+- this allows you to build simple objects quickly and easily
+
+  >>> def seq_add(seq, add):
+  ...     return map(lambda i: i+add, seq)
+
+  >>> seq_add(range(10), 3)
+  <map object at 0x7fc7cc779198>
+
+  >>> list(seq_add(range(10), 3))
+  [3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+
+- `add` is enclosed
+- in `python`, the anonymous function is a closure over `add`
+- it is anonymous and local
+
+* Making modules
+
+Two types of `modules` exist:
+
+- *pure* *python* *modules:* any file called `<module-name>.py` containing `python` code
+- *extension* *modules:* a shared library conforming to some format
+
+Python looks for `modules` in the directories listed in `sys.path`.
+
+- `sys.path` includes any paths that are listed in the environment variable `$PYTHONPATH` at the time the interpreter is started
+
+* List comprehensions
+
+  >>> print([ x*x for x in range(10) ])
+  [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+  
+  >>> a = []
+  >>> for x in range(10):
+  ...    a.append(x*x)
+  ...
+  
+  >>> print(a)
+  [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+  
+  >>> [ (x,y) for x in range(4) for y in 'abc' ]
+  [(0, 'a'), (0, 'b'), (0, 'c'),
+   (1, 'a'), (1, 'b'), (1, 'c'),
+   (2, 'a'), (2, 'b'), (2, 'c'),
+   (3, 'a'), (3, 'b'), (3, 'c')]
+
+* List comprehensions
+
+  >>> [ (x,y)
+  ...    for x in range(6) if x%2
+  ...    for y in range(6) if x>y ]
+  [(1, 0), (3, 0), (3, 1), (3, 2),
+   (5, 0), (5, 1), (5, 2), (5, 3), (5, 4)]
+  
+  >>> a = []
+  >>> for x in range(6):
+  ...     if x%2:
+  ...         for y in range(6):
+  ...             if x>y:
+  ...                 a.append((x,y))
+  ...
+  >>> print(a)
+  [(1, 0), (3, 0), (3, 1), (3, 2),
+   (5, 0), (5, 1), (5, 2), (5, 3), (5, 4)]
+
+
+* Batteries included
+
+- python standard library contains a wealth of modules
+- many third party modules available
+- enable you to become productive without having to struggle with the low-level details
+
+Definitive reference:
+- [[https://docs.python.org/library/index.html]]
+
+- re: regular expression operations
+- struct: interpret strings as packed binary data
+- collections: high-performance container datatypes
+- array: efficient arrays of numeric values
+
+* 
+
+- math: mathematical functions
+- cmath: mathematical functions for complex numbers
+- random: generate pseudo-random numbers
+- itertools: functions creating iterators for efficient looping
+
+- pickle: python object serialization
+- shelve: python object persistence
+- zlib, gzip, bz2, zipfile: compression formats handling
+- csv: CSV file reading and writing (spreadsheet)
+- ctypes: a foreign function library for python
+
+and many many more...
+
+* shelve
+
+`shelve` implements a persistent storage for arbitrary python objects which can be pickled, using a dictionary-like API
+
+- creating a new shelf:
+
+  >>> import shelve
+  >>> s = shelve.open('test_shelf.db')
+  >>> try:
+  ...     s['key1'] = { 'int': 10, 'float':9.5,
+  ...                   'string':'Sample data' }
+  ... finally:
+  ...     s.close()
+
+* shelve
+
+Read the data again:
+
+- exit and re-launch python
+- open the shelf
+- use it like a dictionary
+
+  >>> import shelve
+  >>> s = shelve.open('test_shelf.db')
+  >>> try:
+  ...     existing = s['key1']
+  ... finally:
+  ...     s.close()
+  ...
+
+  >>> existing
+  {'int': 10, 'float': 9.5, 'string': 'Sample data'}
+
+* Scientific batteries
+
+`numpy`: foundation package for scientific computing with Python
+
+- a powerful N-dimensional array object
+- sophisticated (broadcasting) functions
+- useful linear algebra, Fourier transform, and random number capabilities.
+
+Most of the scientific packages are built on top of `numpy`:
+
+- scipy: open-source software for mathematics, science, . . .
+- matplotlib: 2D/3D plotting library to easily produce publication quality figures
+- cython: a compiler for python and a python-like language to easily produce C-extension modules for python
+- pytables: python bindings to HDF5, a C library for efficient I/O and data structures' persistification
+
+* References
+
+.link http://docs.python.org
+.link http://www.doughellmann.com/PyMOTW/
+.link http://jacek.home.cern.ch/jacek/python-course/
+.link http://pypi.python.org/pypi
+.link http://www.scipy.org/
+.link http://docs.scipy.org/doc/
+.link http://matplotlib.sourceforge.net/index.html
+.link http://docs.cython.org/
+.link http://www.pytables.org/moin
+.link http://h5py.alfven.org/docs/guide/quick.html
+
+

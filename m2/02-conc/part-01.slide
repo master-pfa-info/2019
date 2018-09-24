@@ -204,6 +204,32 @@ where:
 
 .image _figs/amdahl-def.png 70 _
 
+* Types of parallelism
+
+Most common types:
+
+- Data
+- Task
+- Embarrassingly parallel
+- Dataflow
+
+* Data parallelism
+
+.image _figs/par-types-data.png
+
+* Task parallelism
+
+.image _figs/par-types-task.png
+
+* Embarrassingly parallel
+
+.image _figs/par-types-emb-par.png
+
+* Dataflow
+
+.image _figs/par-types-dataflow.png
+
+
 * Parallel programming: multi-process vs multi-threaded
 
 Multi-process:

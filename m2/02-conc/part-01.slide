@@ -220,6 +220,15 @@ Multi-threaded:
 - thread-safety of external libraries?
 - one thread can corrupt another thread
 
+* Parallel issues
+
+A thread is a single flow of control within a program.
+
+- Every thread can potentially access every object and function in the program
+- The interleaving of each thread's instructions is undefined
+
+.image _figs/thread-exec-race.png
+
 
 * Concurrency in Go
 

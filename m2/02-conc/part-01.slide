@@ -184,11 +184,11 @@ Too coarse grained:
 - Data: load balancing problems
 - Tasks: insufficient items to keep processes busy
 
-* Amdhal's law
+* Amdahl's law
 
 Amdahl's law can be formulated in the following way:
 
-.html _figs/amdhal-def.svg
+.image _figs/amdahl-def.png 80 _
 
 where:
 
@@ -200,9 +200,9 @@ where:
 
 * 
 
-.image _figs/amdhal-law.png 500 _
+.image _figs/amdahl-law.png 500 _
 
-.html _figs/amdhal-def.svg
+.image _figs/amdahl-def.png 70 _
 
 * Parallel programming: multi-process vs multi-threaded
 

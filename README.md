@@ -14,7 +14,12 @@ Here are the direct links to various slides that are part of the PFA master:
   - [m1/02-prog part 04](https://talks.godoc.org/github.com/master-pfa-info/2018/m1/02-prog/part-04.slide),
   - [m1/02-prog part 05](https://talks.godoc.org/github.com/master-pfa-info/2018/m1/02-prog/part-05.slide),
   - [m1/02-prog part 06](https://talks.godoc.org/github.com/master-pfa-info/2018/m1/02-prog/part-06.slide),
-  - [m1/02-prog part 07](https://talks.godoc.org/github.com/master-pfa-info/2018/m1/02-prog/part-07.slide),
+  - [m1/02-prog part 07 (OOP)](https://talks.godoc.org/github.com/master-pfa-info/2018/m1/02-prog/part-07.slide),
+
+- [m2/01-oop](https://talks.godoc.org/github.com/master-pfa-info/2018/m2/01-oop/part-01.slide)
+- m2/02-prog:
+  - [m2/02-prog part 01](https://talks.godoc.org/github.com/master-pfa-info/2018/m2/02-prog/part-01.slide),
+  - [m2/02-prog part 02](https://talks.godoc.org/github.com/master-pfa-info/2018/m2/02-prog/part-02.slide),
 
 Slides are updated after each session.
 

@@ -1,0 +1,31 @@
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+func main() {
+	// START OMIT
+	var wg sync.WaitGroup
+
+	wg.Add(1) // HL
+	go func() {
+		defer wg.Done() // HL
+		fmt.Println("1st goroutine sleeping...")
+		time.Sleep(1 * time.Second)
+	}()
+
+	wg.Add(1) // HL
+	go func() {
+		defer wg.Done() // HL
+		fmt.Println("2nd goroutine sleeping...")
+		time.Sleep(2 * time.Second)
+	}()
+
+	wg.Wait() // HL
+	fmt.Println("All goroutines complete.")
+
+	// STOP OMIT
+}

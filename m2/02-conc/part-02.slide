@@ -101,6 +101,56 @@ builtins:
 - channels + goroutines
 - `select`
 
+* Go concurrency model: fork-join
+
+.play _code/go-fork-join-model.go /START/,/STOP/
+
+.image _figs/fork-join.png _ 400
+
+* Go concurrency model: fork-join
+
+The previous example had one problem:
+
+- there is no guarantee that `sayHello` will manage to execute.
+
+The goroutine may very well be created, scheduled to be executed by the Go runtime, but may never get a chance to actually run before the end of `main`.
+
+To correct this behaviour, we need to create "join" point, so the `main` and `sayHello` goroutines are synchronized.
+
+* Go concurrency model: fork-join
+
+.play _code/go-fork-join-wg.go
+
+Now, the `main` goroutine is *deterministically* blocked, waiting for the `sayHello` goroutine to give the "go-ahead".
+
+It's just one way to achieve synchronization... (we'll see some of those.)
+
+* sync.WaitGroup
+
+.play _code/sync-waitgroup.go /START/,/STOP/
+
+* sync.WaitGroup
+
+.play _code/sync-waitgroup-many.go /START/,/STOP/
+
+* sync.Mutex
+
+.code _code/sync-mutex.go /START-DECL/,/STOP-DECL/
+
+* sync.Mutex
+
+.play _code/sync-mutex.go /START-MAIN/,/STOP-MAIN/
+
+* sync.Mutex
+
+- always make sure each `Mutex.Lock()` has its `Mutex.Unlock()` counterpart
+- try to minimize the _"critical_ _section"_ (the code b/w `Lock` and `Unlock`)
+- critical sections are bottlenecks in programs
+
+One possible avenue to reduce critical sections is to distinguish b/w exclusive *read* access to a piece of memory and *write* access.
+
+* sync.RWMutex
+
 * Concurrency patterns in Go
 
 * Confinement

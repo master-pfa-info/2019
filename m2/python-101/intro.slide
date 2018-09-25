@@ -443,18 +443,18 @@ Dictionaries are hash-tables: a bit like a fast `C++` `std::map` or like [[https
 - no curly braces `{}`
 
   >>> if True:
-  ... print 'this'
-  ... print 'that'
+  ...     print 'this'
+  ...     print 'that'
   ... else:
-  ... print 'the other'
+  ...     print 'the other'
 
 - note that blocks start with colons `:`
 - there is a special empty block: `pass`
 
   >>> if True:
-  ... pass
+  ...     pass
   ... else:
-  ... print "False"
+  ...     print "False"
 
 * Indentation - II
 
@@ -488,14 +488,14 @@ User defined types can determine their own interpretation in boolean contexts
 
   >>> epsilon = 1.0
   >>> while 1 + epsilon > 1:
-  ... epsilon /= 2
-  ... print(epsilon)
+  ...     epsilon /= 2
+  ...     print(epsilon)
 
   >>> for c in 'hello':
-  ... print(c)
+  ...     print(c)
   
   >>> for i in range(10):
-  ... print(i)
+  ...     print(i)
 
 - `for`-loops work with *any* iterable
 
@@ -516,23 +516,23 @@ Both `while` and `for` loops have an optional else clause, the body of which is 
 * Functions
 
   >>> def my_function(arg1, arg2):
-  ... """optional docstring."""
-  ... # your implementation goes here
-  ... return arg1 + arg2 # optional
+  ...     """optional docstring."""
+  ...     # your implementation goes here
+  ...     return arg1 + arg2 # optional
 
   >>> def returns_nothing():
-  ... pass
+  ...     pass
   
   >>> def returns_none():
-  ... return None
+  ...     return None
   
   >>> def also_returns_none():
-  ... return
+  ...     return
 
 * Multiple return values
 
   >>> def powers(n):
-  ... return n, n**2, n**3
+  ...     return n, n**2, n**3
 
   >>> v = powers(2)
   >>> v1, v2, v3 = powers(2)
@@ -548,7 +548,7 @@ Both `while` and `for` loops have an optional else clause, the body of which is 
 * Multiple return values
 
   >>> def powers(n):
-  ... return n, n**2, n**3
+  ...     return n, n**2, n**3
 
   >>> v = powers(2)
   >>> v1, v2, v3 = powers(2)
@@ -573,7 +573,7 @@ Almost everything (functions, classes, modules. . . ) in python is a first-class
   >>> import math
   >>> trig = math.sin, math.cos, math.tan
   >>> for fn in trig:
-  ... print (fn, fn(math.pi/3))
+  ...     print (fn, fn(math.pi/3))
   <built-in function sin> 0.866025403784
   <built-in function cos> 0.5
   <built-in function tan> 1.73205080757

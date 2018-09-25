@@ -126,9 +126,9 @@ Modify the code below to make `MyFloat` and `Vertex` implement the `Abser` inter
 
 .play _code/ex-interfaces.go /STARTABSER OMIT/,/ENDABSER OMIT/
 
-## * Solution
-## 
-## .play _code/ex-interfaces.go /STARTABSERIMPL OMIT/,/ENDABSERIMPL OMIT/
+* Solution
+
+.play _code/ex-interfaces.go /STARTABSERIMPL OMIT/,/ENDABSERIMPL OMIT/
 
 * 
 

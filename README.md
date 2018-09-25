@@ -20,6 +20,7 @@ Here are the direct links to various slides that are part of the PFA master:
 - m2/02-prog:
   - [m2/02-prog part 01](https://talks.godoc.org/github.com/master-pfa-info/2018/m2/02-prog/part-01.slide),
   - [m2/02-prog part 02](https://talks.godoc.org/github.com/master-pfa-info/2018/m2/02-prog/part-02.slide),
+  - [m2/intro-python](https://talks.godoc.org/github.com/master-pfa-info/2018/m2/python-101/intro.slide),
 
 Slides are updated after each session.
 

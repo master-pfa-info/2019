@@ -1,0 +1,31 @@
+Introduction to Python Notebooks
+Master 2
+
+Sebastien Binet
+CNRS/IN2P3/LPC-Clermont
+sebastien.binet@clermont.in2p3.fr
+
+* Introduction
+
+Python notebooks are environments that can run python code (and much more.)
+
+One of the many notebooks implementations is *Jupyter*:
+
+.link https://jupyter.org/
+
+Jupyter notebooks can be run locally (once installed), or "on the cloud".
+
+The [[https://mybinder.org/][MyBinder]] project allows to create notebooks in the cloud and share them with other enthusiasts.
+MyBinder allows to turn, say, a [[https://github.com][GitHub]] repository into a Jupyter notebook.
+
+.link https://mybinder.org
+.link https://mybinder.readthedocs.io/en/latest
+
+* Python-3 notebook
+
+A notebook has been created with [[https://mybinder.org/][MyBinder]], with Python-3 installed and a couple of notebook examples:
+
+.link https://mybinder.org/v2/gh/master-pfa-info/unix/master?urlpath=lab github.com/master-pfa-info/unix (jupyterlab)
+.link https://mybinder.org/v2/gh/master-pfa-info/unix/master github.com/master-pfa-info/unix (jupyter "vintage")
+
+Have a look at the `notebooks` directory and the `*.ipynb` files.

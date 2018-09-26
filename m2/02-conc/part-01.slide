@@ -56,8 +56,15 @@ What can we do with them ?
 
 * Parallel programming
 
-Ok, so we have to do parallel programming to properly utilize our new
-hardware...
+To recap:
+
+- the clock frequency of CPUs is plateauing
+- the number of transistors in a CPU is still (more or less) increasing
+- this results in many more cores per CPUs
+- this results in many different and heterogeneous ways to utilize these transistors and cores
+- increasing the performances of CPU[generation N] -> CPU[generation N+1] can't be done anymore by just relying on the clock frequency.
+
+Ok, so we have to do parallel programming to properly utilize our new hardware...
 
 Actually, are we really sure we want to do *parallel* programming ?
 

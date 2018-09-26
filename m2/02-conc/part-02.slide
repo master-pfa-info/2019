@@ -235,9 +235,64 @@ ie: use a [[https://godoc.org/sync#RWMutex][sync.RWMutex]]
 
 * sync.Cond
 
+[[https://godoc.org/sync#Cond][Cond]] is a rendezvous point for goroutines waiting for or announcing the occurrence of an event.
+That event can be any arbitrary signal between 2 or more goroutines.
+The event itself does not carry any informaton other than "it occurred".
+
+A naive (and CPU hungry) way to do that could be:
+
+  for condition() == false {
+      time.Sleep(1*time.Millisecond)
+  }
+
+A better way is to use [[https://godoc.org/sync#Cond][sync.Cond]].
+
+* sync.Cond
+
+.code _code/sync-cond.go /START/,/STOP/
+
+This approach is much more efficient:
+
+- _Wait_ not only blocks the goroutine, it _suspends_ it
+- this allows other goroutines to run on the OS thread
+
+_NB:_ it looks like we hold the lock the whole time.
+In fact, _Wait_ calls _Unlock_ at the start, and calls _Lock_ when it exits.
+
+* sync.Cond
+
+.play _code/sync-cond-queue.go /START/,/STOP/
+
+* sync.Cond
+
+.code _code/sync-cond-button.go /START/,/STOP/
+
+* sync.Cond
+
+.play _code/sync-cond-button.go /START-MAIN/,/STOP-MAIN/
+
 * sync.Once
 
+.play _code/sync-once.go /START/,/STOP/
+
+[[https://godoc.org/sync#Once][sync.Once]] is a type that leverages _sync_ primitives to ensure that only _one_ call to _Do_ ever calls the function passed in, even on different goroutines.
+
+* sync.Once
+
+.play _code/sync-once-gotcha.go /START/,/STOP/
+
+[[https://godoc.org/sync#Once][sync.Once]] only counts the number of times _Do_ is called, *not* how many unique functions are passed to _Do_.
+
 * sync.Pool
+
+[[https://godoc.org/sync#Pool][sync.Pool]] is a concurrent-safe implementation of the object pool pattern.
+
+It provides a way to create and make available a fixed number (a pool) of things for use.
+A _sync.Pool_ can be safely used from multiple goroutines.
+
+.play _code/sync-pool.go /START/,/STOP/
+
+Using a pool can reduce the amount of memory to be allocated, and the pressure on the Garbage Collector (and thus improve runtime performances.)
 
 * Concurrency patterns in Go
 

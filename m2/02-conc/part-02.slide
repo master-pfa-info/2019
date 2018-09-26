@@ -14,6 +14,22 @@ sebastien.binet@clermont.in2p3.fr
 - memory access synchronization
 - deadlocks, livelocks and starvation
 
+* Race conditions
+
+A race condition occurs when 2 or more operations *must* execute in the *correct* order, but that order is not enforced by the program.
+
+.play _code/race-cond.go /START/,/STOP/
+
+* Race conditions
+
+Done: fixed it!
+
+.play _code/race-cond-sleep.go /START/,/STOP/
+
+or did we? well... no.
+We've just made it increasingly *unlikely* to have the "bad" behaviour.
+We've also made our program less efficient.
+
 * Deadlock
 
 2 people at a door, trying to enter a room

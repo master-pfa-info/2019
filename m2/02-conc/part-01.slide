@@ -77,7 +77,7 @@ _Parallelism:_ programming as the simultaneous execution of (possibly related) c
 
 How to prepare a (sequential) pizza?
 
-.code _code/make-pizza.f
+.code _code/make-pizza.go
 
 Estimated time (1 chef, 1 pizza):
 
@@ -341,6 +341,7 @@ A channel in Go provides a connection between two goroutines, allowing them to c
 .code _code/helpers.go /START2/,/STOP2/
 .code _code/helpers.go /START3/,/STOP3/
 .code _code/helpers.go /START4/,/STOP4/
+.code _code/helpers.go /START5/,/STOP5/
 
 * Using channels
 

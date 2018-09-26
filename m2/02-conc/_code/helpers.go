@@ -27,9 +27,13 @@ func main() {
 	_ = value
 
 	// START4 OMIT
-	// Closing a channel.
-	// No data can be received from or sent to this channel.
+	// Closing a channel: no data can be received from or sent to this channel.
 	// (the program will panic if you try to send to a closed channel.)
 	close(c) // HL
 	// STOP4 OMIT
+
+	// START5 OMIT
+	// Receiving a value and a boolean telling whether the channel is closed.
+	value, ok := <-c // HL
+	// STOP5 OMIT
 }

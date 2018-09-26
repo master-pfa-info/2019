@@ -30,6 +30,64 @@ or did we? well... no.
 We've just made it increasingly *unlikely* to have the "bad" behaviour.
 We've also made our program less efficient.
 
+Race conditions can be quite painful the bug to track: they may be lurking for years, deep inside a component of a program, and only show up when something else has changed in the environment.
+
+* Race conditions
+
+.image _figs/thread-exec-race.png
+
+For years we could have been in a situation where we'd always get:
+
+  r1 == 1
+  r2 == 1
+
+and at some point in time, something changes and we get either _"Execution_ _1"_ or _"Execution_ _2"_...
+
+* Atomicity
+
+An operation is considered *atomic*, or to have the property of *atomicity* when, _within_ _the_ _context_ _that_ _it_ _is_ _operating_, it is *indivisible* or *uninterruptible*.
+
+Depending on the context (a program, the OS, the machine, ...), an operation may or may not retain its property of atomicity.
+
+Consider this instruction:
+
+  i++
+
+It may _look_ atomic.
+
+But it consists in fact in several operations:
+
+- retrieve the value of _i_
+- increment the value of _i_ by one
+- store the value of _i_.
+
+* Memory access synchronization
+
+Consider the following data race:
+
+.play _code/data-race.go /START/,/STOP/
+
+The output of this program is completely *nondeterministic*.
+There are 3 parts in this program that need exclusive access to a shared resource (_data_):
+
+- the goroutine that increments _data_
+- the _if_ statement that checks the value of _data_
+- the _else_ body that retrieves and prints the value of _data_.
+
+These parts are called *critical* *sections*.
+
+* Memory access synchronization
+
+There are various ways to address this issue and _guard_ a program's critical sections.
+One way (a not very Go-ish one) is the following:
+
+.play _code/data-race-wg.go /START/,/STOP/
+
+We protect the access+modification of _data_ with the _mux_ variable.
+Access is synchronized, the data race goes away. (but *not* the race condition!)
+
+But if somebody forgets to properly use _Lock()/Unlock()_, all hell breaks loose...
+
 * Deadlock
 
 2 people at a door, trying to enter a room
@@ -165,7 +223,21 @@ It's just one way to achieve synchronization... (we'll see some of those.)
 
 One possible avenue to reduce critical sections is to distinguish b/w exclusive *read* access to a piece of memory and *write* access.
 
-* sync.RWMutex
+ie: use a [[https://godoc.org/sync#RWMutex][sync.RWMutex]]
+
+## * sync.RWMutex
+##
+## .code _code/sync-rwmutex.go /START-HEAD/,/STOP-HEAD/
+##
+## * 
+##
+## .play _code/sync-rwmutex.go /START-MAIN/,/STOP-MAIN/
+
+* sync.Cond
+
+* sync.Once
+
+* sync.Pool
 
 * Concurrency patterns in Go
 

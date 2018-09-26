@@ -7,7 +7,7 @@ func main() {
 	println("in main")
 	var wg sync.WaitGroup
 	sayHello := func() {
-		defer wg.Done()
+		defer wg.Done() // HL
 		println("hello there!")
 	}
 	wg.Add(1)

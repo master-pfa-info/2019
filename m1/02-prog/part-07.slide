@@ -313,10 +313,10 @@ Now, in `"uca.fr/rot13"`, implement the `io.Reader` interface:
 
   $> cd caesar-cipher
   $> go build
-  $> echo "hello" | caesar-cipher
+  $> echo "hello" | ./caesar-cipher
   uryyb
 
-  $> echo "hello" | caesar-cipher | caesar-cipher
+  $> echo "hello" | ./caesar-cipher | ./caesar-cipher
   hello
 
 

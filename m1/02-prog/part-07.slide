@@ -170,7 +170,7 @@ Define 2 new interfaces:
   }
 
   type Stringer interface {
-      // String returns a string reprensation of a value.
+      // String returns a string represensation of a value.
       String() string
   }
 

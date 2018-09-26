@@ -52,7 +52,7 @@ func Perimeter(rect Rect) float64 { return 2 * (rect.Width + rect.Height) }
 // STARTSTRINGER OMIT
 
 type Stringer interface {
-	// String returns a string reprensation of a value.
+	// String returns a string represensation of a value.
 	String() string
 }
 

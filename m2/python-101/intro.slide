@@ -1210,4 +1210,9 @@ Most of the scientific packages are built on top of `numpy`:
 .link http://www.pytables.org/moin
 .link http://h5py.alfven.org/docs/guide/quick.html
 
+* Tutorials
+
+.link https://indico.cern.ch/event/724719/contributions/2981046/attachments/1638055/2755086/ICTP-Py-1.pdf MCnet school - python
+.link https://indico.cern.ch/event/724719/contributions/3020257/attachments/1709430/2755351/ICTP-Py-3-numpy.pdf MCnet school - numpy+matplotlib
+.link http://www.scipy-lectures.org
 

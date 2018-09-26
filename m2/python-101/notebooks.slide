@@ -29,3 +29,19 @@ A notebook has been created with [[https://mybinder.org/][MyBinder]], with Pytho
 .link https://mybinder.org/v2/gh/master-pfa-info/unix/master github.com/master-pfa-info/unix (jupyter "vintage")
 
 Have a look at the `notebooks` directory and the `*.ipynb` files.
+
+* Beware: Notebooks
+
+Notebooks are great:
+
+- shiny
+- easy
+- slick
+- a web page!
+
+But they are no panacea.
+They can also be quite treacherous, deceptive and unreliable.
+
+See:
+
+.link https://docs.google.com/presentation/d/1n2RlMdmv1p25Xy5thJUhkKGvjtV-dkAIsUXP-AL4ffI/edit#slide=id.g362da58057_0_1 "I Don't Like Notebooks - Joel Grus - #JupyterCon 2018"

@@ -556,17 +556,17 @@ Then read and print 10 values from the channel. It should be the numbers 1, 2, 3
 
 The documentation for `Tree` can be found [[https://godoc.org/golang.org/x/tour/tree#Tree][here]].
 
-# * Solution
-# 
-# .code _code/btree.go /STARTWALK/,/ENDWALK/
-# 
-# * Solution
-# 
-# .code _code/btree.go /STARTSAME/,/ENDSAME/
-# 
-# * Solution
-# 
-# .play _code/btree.go /^func main/,/^}/
+* Solution
+
+.code _code/btree.go /STARTWALK/,/ENDWALK/
+
+* Solution
+
+.code _code/btree.go /STARTSAME/,/ENDSAME/
+
+* Solution
+
+.play _code/btree.go /^func main/,/^}/
 
 
 * 
@@ -585,17 +585,17 @@ We need to tell the 2 `Walk` goroutines that their services are no longer requir
 
 This can be done with a `quit` channel.
 
-# * Solution
-# 
-# .code _code/btree-noleak.go /STARTWALK/,/ENDWALK/
-# 
-# * Solution
-# 
-# .code _code/btree-noleak.go /STARTSAME/,/ENDSAME/
-# 
-# * Solution
-# 
-# .play _code/btree-noleak.go /^func main/,/^}/
+* Solution
+
+.code _code/btree-noleak.go /STARTWALK/,/ENDWALK/
+
+* Solution
+
+.code _code/btree-noleak.go /STARTSAME/,/ENDSAME/
+
+* Solution
+
+.play _code/btree-noleak.go /^func main/,/^}/
 
 * Resources
 

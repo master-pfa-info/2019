@@ -597,6 +597,29 @@ This can be done with a `quit` channel.
 
 .play _code/btree-noleak.go /^func main/,/^}/
 
+* Exercize: Lattice paths
+
+Starting in the top left corner of a `2x2` grid, and only being able to move to the right and down, there are exactly 6 routes to the bottom right corner.
+
+.image _figs/lattice.png
+
+How many such routes are there through a `10x10` grid?
+
+_Hint:_ Use [[https://godoc.org/sync#WaitGroup][sync.WaitGroup]].
+
+
+* Exercize: Lattice paths
+
+.code _code/lattice-start.go
+
+## * Solution
+## 
+## .code _code/lattice.go /START-COMPUTE/,/STOP-COMPUTE/
+## 
+## * Solution
+## 
+## .play _code/lattice.go /START-INSPECT/,/STOP-INSPECT/
+
 * Resources
 
 .link https://golang-book.com

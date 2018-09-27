@@ -45,3 +45,9 @@ They can also be quite treacherous, deceptive and unreliable.
 See:
 
 .link https://docs.google.com/presentation/d/1n2RlMdmv1p25Xy5thJUhkKGvjtV-dkAIsUXP-AL4ffI/edit#slide=id.g362da58057_0_1 "I Don't Like Notebooks - Joel Grus - #JupyterCon 2018"
+
+* None-Python notebooks
+
+It's quite possible to run non-Python notebooks:
+
+.link https://mybinder.org/v2/gh/go-hep/binder/master go-hep/binder Go notebook

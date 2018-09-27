@@ -470,4 +470,121 @@ How would you fix this?
 
 * Pipelines
 
+Writing programs is all about chunking work between functions of adequate length:
+
+- we construct abstractions in the form of functions
+- build up a basic vocabulary based off functions
+
+This allows to abstract away "uninteresting" details in the grand scheme of the universe.
+This allows to work on a restricted area of the whole code, without impacting other areas.
+
+In effect, we build _pipelines_ of functions, to process streams or batches of data.
+
+ +---------+     +---------+     +---------+
+ | stage 1 | --> | stage 2 | --> | stage 3 | --> ...
+ +---------+     +---------+     +---------+
+
+* Pipelines
+
+.code _code/pipeline-batch.go /START-MUL/,/STOP-MUL/
+.code _code/pipeline-batch.go /START-ADD/,/STOP-ADD/
+
+* Pipelines
+
+Let's combine these 2 _add_ and _mul_ functions:
+
+.play _code/pipeline-batch.go /START-MAIN/,/STOP-MAIN/
+
+- each stage (_mul_, _add_) consumes and returns the same type (_ie:_ _[]int_)
+- each stage can be passed around (as a value, or as an argument of another stage)
+
+The pipeline above performs a *batch* *processing*: each stage operates on chunks of data all at once, instead of one discrete value at a time.
+
+*stream* *processing* is another type of pipeline where each stage receives or emits one element at a time.
+
+* Pipelines
+
+.play _code/pipeline-stream.go /START-MUL/,/STOP-MAIN/
+
+- each stage is receiving and emitting a discrete value (reduced memory footprint _wrt_ batch processing)
+- pipeline is now hard-coded inside the for-loop
+
+This limit the reusability of the pipeline _and_ its ability to scale.
+
+* Concurrent pipelines
+
+Channels are a great support to construct pipelines in Go:
+
+- they can receive and emit values
+- they can safely be used concurrently
+- they can be _ranged_ over
+- they can be passed around (as arguments, values, ...)
+
+Let's try to rewrite our pipeline in terms of channels...
+
+* 
+
+.code _code/pipeline-conc.go /START-GEN/,/STOP-GEN/
+
+* 
+
+.code _code/pipeline-conc.go /START-ADD/,/STOP-ADD/
+
+* 
+
+.code _code/pipeline-conc.go /START-MUL/,/STOP-MUL/
+
+* 
+
+.play _code/pipeline-conc.go /START-MAIN/,/STOP-MAIN/
+
+- we can _range_ to extract the values
+- at each stage, we can safely execute concurrently
+- each stage only needs to wait for its inputs to be able to send its ouputs
+- each stage can thus execute independent of one another, for some slice of time.
+
+* Nifty generators
+
+* Repeat
+
+.code _code/gen-repeat.go /START-REPEAT/,/STOP-REPEAT/
+
+* Take
+
+.code _code/gen-repeat.go /START-REPEAT/,/STOP-REPEAT/
+
+* Example: repeat + take
+
+.play _code/gen-repeat.go /START-MAIN/,/STOP-MAIN/
+
+* Repeat func
+
+.code _code/gen-repeat-func.go /START-REPEAT/,/STOP-REPEAT/
+.play _code/gen-repeat-func.go /START-MAIN/,/STOP-MAIN/
+
+
+* Other patterns
+
+- Fan-in, Fan-out
+- or-done-channel
+- tee-channel, bridge-channel
+- queuing
+- ...
+
+For more background:
+
+.link https://blog.golang.org/pipelines
+.link https://blog.golang.org/context
+.link https://talks.golang.org/2012/waza.slide
+.link https://talks.golang.org/2012/splash.slide
+.link https://katherine.cox-buday.com/concurrency-in-go/
+
+* Resources
+
+.link https://golang-book.com
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp01_intro.pdf
+.link http://www.inf.unibz.it/dis/teaching/PP/ln/pp02_oo.pdf
+.link https://tour.golang.org
+.link https://www.golangbootcamp.com/book
+.link https://katherine.cox-buday.com/concurrency-in-go/
 

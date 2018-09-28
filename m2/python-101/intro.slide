@@ -151,9 +151,9 @@ as simple as:
   >>> import sys
   >>> a = sys.maxint
   >>> b = a + 1
-  >>> print a, b
+  >>> print(a, b)
   9223372036854775807 9223372036854775808
-  >>> print type(a), type(b)
+  >>> print(type(a), type(b))
   <type 'int'> <type 'long'>
 
 * Python builtins
@@ -443,10 +443,10 @@ Dictionaries are hash-tables: a bit like a fast `C++` `std::map` or like [[https
 - no curly braces `{}`
 
   >>> if True:
-  ...     print 'this'
-  ...     print 'that'
+  ...     print('this')
+  ...     print('that')
   ... else:
-  ...     print 'the other'
+  ...     print('the other')
 
 - note that blocks start with colons `:`
 - there is a special empty block: `pass`
@@ -454,7 +454,7 @@ Dictionaries are hash-tables: a bit like a fast `C++` `std::map` or like [[https
   >>> if True:
   ...     pass
   ... else:
-  ...     print "False"
+  ...     print("False")
 
 * Indentation - II
 
@@ -573,7 +573,7 @@ Almost everything (functions, classes, modules. . . ) in python is a first-class
   >>> import math
   >>> trig = math.sin, math.cos, math.tan
   >>> for fn in trig:
-  ...     print (fn, fn(math.pi/3))
+  ...     print(fn, fn(math.pi/3))
   <built-in function sin> 0.866025403784
   <built-in function cos> 0.5
   <built-in function tan> 1.73205080757
@@ -595,7 +595,7 @@ notice the important difference b/w:
   >>> add3 = make_adder(3)
   >>> add9 = make_adder(9)
   
-  >>> print (add3(4), add9(4))
+  >>> print(add3(4), add9(4))
   7 13
   
   >>> d = {3: add3, 9: add9, 5: make_adder(5)}
@@ -633,8 +633,8 @@ Be sure to understand a given function before trying out the next
 * Argument passing
 
   >>> def three(*args, **kwds):
-  ...     print ("args=",args)
-  ...     print ("kwds=",kwds)
+  ...     print("args=",args)
+  ...     print("kwds=",kwds)
 
   >>> three(0)
   >>> three(0, 1)
@@ -710,7 +710,7 @@ The garbage collector can detect "circular garbage".
 
   >>> f.seek(0)                  # rewind to beginning of file
   >>> for line in f:
-  ...   print (repr(line))
+  ...   print(repr(line))
 
   '1 2 3 4\n'
   '5 6 7 8'
@@ -886,16 +886,16 @@ The standard exceptions are organized in an inheritance hierarchy: _e.g._ `Overf
 - Look Before You Leap
 
   >>> if denominator == 0:
-  ...     print ("Oops")
+  ...     print("Oops")
   ... else:
-  ...     print (numerator/denominator)
+  ...     print(numerator/denominator)
 
 - Easier to Ask for Forgiveness than Permission
 
   >>> try:
-  ...     print (numerator/denominator)
+  ...     print(numerator/denominator)
   ... except ZeroDivisionError:
-  ...     print ("Oops")
+  ...     print("Oops")
 
 - EAFP is the pythonic way
 
@@ -967,16 +967,16 @@ Typically, OOP support is based on:
   >>> print(Counter)
   <class '__main__.Counter'>
 
-  >>> print (a.count)
+  >>> print(a.count)
   12
   
-  >>> print (Counter.count)
+  >>> print(Counter.count)
   Traceback (most recent call last):
     File "<stdin>", line 1, in <module>
   AttributeError: type object 'Counter' has no attribute 'count'
   
   >>> a.foo = 42
-  >>> print (a.foo)
+  >>> print(a.foo)
   42
 
 * Inheritance, operators
@@ -995,19 +995,19 @@ Typically, OOP support is based on:
   class A(object):
       def __init__(self, a):
           self.a = a
-          print ("A.__init__(a=%s)" % a)
+          print("A.__init__(a=%s)" % a)
   
   class B(object):
       def __init__(self, b):
           self.b = b
-          print ("B.__init__(b=%s)" % b)
+          print("B.__init__(b=%s)" % b)
   
   class C(A,B):
       def __init__(self, a, b, c):
           A.__init__(self, a)
           B.__init__(self, b)
           self.c = c
-          print ("C.__init__(a=%s b=%s c=%s)" % (
+          print("C.__init__(a=%s b=%s c=%s)" % (
                  self.a, self.b, self.c))
 
 * 

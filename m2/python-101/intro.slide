@@ -768,11 +768,12 @@ _hints:_
   >>> filter(lambda x: x%2, range(20))
   [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
   
-  >>> reduce(lambda a,b: a+b, range(10))
+  >>> import functools as ft
+  >>> ft.reduce(lambda a,b: a+b, range(10))
   45
   
   >>> import operator as op
-  >>> reduce(op.add, range(10)), sum(range(10))
+  >>> ft.reduce(op.add, range(10)), sum(range(10))
   (45, 45)
 
 * Summing exercize

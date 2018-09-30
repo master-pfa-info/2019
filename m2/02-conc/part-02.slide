@@ -413,10 +413,10 @@ Oops, this isn't displayed:
 
 The goroutine is leaked. Try to fix it.
 
-## * Solution
-## 
-## .play _code/goroutine-wleak-fixed.go /START-MAIN/,/STOP-MAIN/
-## 
+* Solution
+
+.play _code/goroutine-wleak-fixed.go /START-MAIN/,/STOP-MAIN/
+
 
 * or-channel
 
@@ -457,16 +457,16 @@ That is not a robust way to deal with an error.
 
 How would you fix this?
 
-## * Solution
-## 
-## .code _code/err-handling-fixed.go /START-WORK/,/STOP-WORK/
-## 
-## * Solution
-## 
-## .play _code/err-handling-fixed.go /START-MAIN/,/STOP-MAIN/
-## 
-## Here, we've extracted the error handling from the producer goroutine and relocalized it where it makes more sense.
-## It's also where most of the useful context exists (so more intelligent decisions about what to do with the errors can take place.)
+* Solution
+
+.code _code/err-handling-fixed.go /START-WORK/,/STOP-WORK/
+
+* Solution
+
+.play _code/err-handling-fixed.go /START-MAIN/,/STOP-MAIN/
+
+Here, we've extracted the error handling from the producer goroutine and relocalized it where it makes more sense.
+It's also where most of the useful context exists (so more intelligent decisions about what to do with the errors can take place.)
 
 * Pipelines
 

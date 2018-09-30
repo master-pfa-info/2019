@@ -612,13 +612,13 @@ _Hint:_ Use [[https://godoc.org/sync#WaitGroup][sync.WaitGroup]].
 
 .code _code/lattice-start.go
 
-## * Solution
-## 
-## .code _code/lattice.go /START-COMPUTE/,/STOP-COMPUTE/
-## 
-## * Solution
-## 
-## .play _code/lattice.go /START-INSPECT/,/STOP-INSPECT/
+* Solution
+
+.code _code/lattice.go /START-COMPUTE/,/STOP-COMPUTE/
+
+* Solution
+
+.play _code/lattice.go /START-INSPECT/,/STOP-INSPECT/
 
 * Resources
 

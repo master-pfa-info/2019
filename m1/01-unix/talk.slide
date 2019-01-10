@@ -496,7 +496,7 @@ This can be done from, either:
 .link https://github.com/master-pfa-info/2018/blob/master/testdata/shell-novice-data.zip
 .link https://cern.ch/binet/master-pfa-info/2018/shell-novice-data.zip
 
-Save it somewhere (probably insider a directory under `$HOME/M_username/` so it won't be automatically removed by the UCA bots)
+Save it somewhere (probably inside a directory under `$HOME/M_username/` so it won't be automatically removed by the UCA bots)
 and then:
 
  $> unzip shell-novice-data.zip

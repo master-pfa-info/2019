@@ -106,9 +106,9 @@ It should behave like so:
   $> ./calc 1 2 3 4 100
   sum= 110
 
-* Solution
-
-.code _code/calc-03.go
+## * Solution
+## 
+## .code _code/calc-03.go
 
 * 
 
@@ -175,9 +175,9 @@ Now, modify our super calculator so that it accepts a `"-v"` flag that enables a
  sum= 110
 
 
-* Solution
-
-.code _code/calc-04.go /^func main/,/^}/ HLflag
+## * Solution
+## 
+## .code _code/calc-04.go /^func main/,/^}/ HLflag
 
 * Structs
 
@@ -343,13 +343,13 @@ To test your package `geo2d` actually works, run the following program:
 
 .play _code/geo2d-test.go
 
-* Solution
-
-.code _code/geo2d.go /START/,/END/
-
-* Solution
-
-.code _code/geo2d.go /STARTFUNCS/,/ENDFUNCS/
+## * Solution
+## 
+## .code _code/geo2d.go /START/,/END/
+## 
+## * Solution
+## 
+## .code _code/geo2d.go /STARTFUNCS/,/ENDFUNCS/
 
 
 

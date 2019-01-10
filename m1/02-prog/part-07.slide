@@ -126,9 +126,9 @@ Modify the code below to make `MyFloat` and `Vertex` implement the `Abser` inter
 
 .play _code/ex-interfaces.go /STARTABSER OMIT/,/ENDABSER OMIT/
 
-* Solution
-
-.play _code/ex-interfaces.go /STARTABSERIMPL OMIT/,/ENDABSERIMPL OMIT/
+## * Solution
+## 
+## .play _code/ex-interfaces.go /STARTABSERIMPL OMIT/,/ENDABSERIMPL OMIT/
 
 * 
 
@@ -187,13 +187,13 @@ Test that you can then pass to `geo2d.Area`:
 - a value of type `Circle` and,
 - a value of type `Rect`.
 
-* Solution
-
-.code _code/geo2d-iface.go /STARTSTRINGER/,/ENDSTRINGER/
-
-* Solution
-
-.code _code/geo2d-iface.go /STARTSURFACER/,/ENDSURFACE/
+## * Solution
+## 
+## .code _code/geo2d-iface.go /STARTSTRINGER/,/ENDSTRINGER/
+## 
+## * Solution
+## 
+## .code _code/geo2d-iface.go /STARTSURFACER/,/ENDSURFACE/
 
 * 
 
@@ -273,9 +273,9 @@ So now, we can start to implement the `rot13` function and make sure it passes a
   
 - `go` `test` builds and runs the tests in the local directory.
 
-* Solution
-
-.code _code/rot13.go /STARTROT13-FUNC OMIT/,/ENDROT13-FUNC OMIT/
+## * Solution
+## 
+## .code _code/rot13.go /STARTROT13-FUNC OMIT/,/ENDROT13-FUNC OMIT/
 
 * 
 
@@ -320,9 +320,9 @@ Now, in `"uca.fr/rot13"`, implement the `io.Reader` interface:
   hello
 
 
-* Solution
-
-.code _code/rot13.go /STARTROT13SOLUTION OMIT/,/ENDROT13SOLUTION OMIT/
+## * Solution
+## 
+## .code _code/rot13.go /STARTROT13SOLUTION OMIT/,/ENDROT13SOLUTION OMIT/
 
 * Polymorphism
 

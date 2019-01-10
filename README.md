@@ -25,6 +25,12 @@ Here are the direct links to various slides that are part of the PFA master:
 
 Slides are updated after each session.
 
+## Access to UCA VMs
+
+It is possible to access the Linux VMs provided by UCA from:
+
+- https://sciportail.dsi.uca.fr/
+
 ## Bootstrapping the work environment
 
 ### Installing the `Go` toolchain

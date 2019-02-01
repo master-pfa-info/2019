@@ -135,9 +135,9 @@ Make sure we still get the same answer when running the new version of the progr
  mean= -0.013051
 
 
-## * Solution
-## 
-## .code _code/read-file-floats-bufio.go /^func main/,/^}/
+* Solution
+
+.code _code/read-file-floats-bufio.go /^func main/,/^}/
 
 * 
 
@@ -157,18 +157,18 @@ Create another program `~/go/src/read-2d-gauss/main.go`, that will:
 
 Make sure you get the expected mean and stddev values for each sample.
 
-## * Solution
-## 
-## .code _code/write-2d-gauss.go /^func main/,/^}/
-## 
-## * Solution
-## 
-## .code _code/read-2d-gauss.go /var g1/,/^}/
-## 
-## * Solution
-## 
-## .code _code/read-2d-gauss.go /^\/\/ mean/,/^}/
-## .code _code/read-2d-gauss.go /^\/\/ stddev/,/^}/
+* Solution
+
+.code _code/write-2d-gauss.go /^func main/,/^}/
+
+* Solution
+
+.code _code/read-2d-gauss.go /var g1/,/^}/
+
+* Solution
+
+.code _code/read-2d-gauss.go /^\/\/ mean/,/^}/
+.code _code/read-2d-gauss.go /^\/\/ stddev/,/^}/
 
 * 
 
@@ -193,21 +193,21 @@ Modify the calculator to compute the mean and standard deviation of the input da
 When that flag is passed, the calculator should display the mean and std-dev of the sample at the end of the program.
 It should work for both modes (when `*flagFile==""` and when a path to a file is given to the program.)
 
-## * Solution
-## 
-## .code _code/calc-05.go /^func main/,/^}/
-## 
-## * Solution
-## 
-## .code _code/calc-05.go /^func run/,/^}/
-## 
-## * Solution
-## 
-## .code _code/calc-05.go /^func readFile/,/^}/
-## 
-## * Solution
-## 
-## .code _code/calc-05.go /^func readArgs/,/^}/
+* Solution
+
+.code _code/calc-05.go /^func main/,/^}/
+
+* Solution
+
+.code _code/calc-05.go /^func run/,/^}/
+
+* Solution
+
+.code _code/calc-05.go /^func readFile/,/^}/
+
+* Solution
+
+.code _code/calc-05.go /^func readArgs/,/^}/
 
 
 * Resources

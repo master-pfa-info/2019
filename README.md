@@ -1,27 +1,27 @@
-# 2018
+# 2019
 
-This is the repository for the 2018 (computing) session of the M1+M2 PFA master.
+This is the repository for the 2019 (computing) session of the M1+M2 PFA master.
 
 ## Slides
 
 Here are the direct links to various slides that are part of the PFA master:
 
-- [m1/01-unix](https://talks.godoc.org/github.com/master-pfa-info/2018/m1/01-unix/talk.slide),
+- [m1/01-unix](https://talks.godoc.org/github.com/master-pfa-info/2019/m1/01-unix/talk.slide),
 - m1/02-prog:
-  - [m1/02-prog part 01 (Types & Variables](https://talks.godoc.org/github.com/master-pfa-info/2018/m1/02-prog/part-01.slide),
-  - [m1/02-prog part 02 (Functions)](https://talks.godoc.org/github.com/master-pfa-info/2018/m1/02-prog/part-02.slide),
-  - [m1/02-prog part 03 (Arrays & Slices)](https://talks.godoc.org/github.com/master-pfa-info/2018/m1/02-prog/part-03.slide),
-  - [m1/02-prog part 04 (Control flow)](https://talks.godoc.org/github.com/master-pfa-info/2018/m1/02-prog/part-04.slide),
-  - [m1/02-prog part 05 (Pointers & Structs)](https://talks.godoc.org/github.com/master-pfa-info/2018/m1/02-prog/part-05.slide),
-  - [m1/02-prog part 06 (I/O)](https://talks.godoc.org/github.com/master-pfa-info/2018/m1/02-prog/part-06.slide),
-  - [m1/02-prog part 07 (OOP)](https://talks.godoc.org/github.com/master-pfa-info/2018/m1/02-prog/part-07.slide),
+  - [m1/02-prog part 01 (Types & Variables](https://talks.godoc.org/github.com/master-pfa-info/2019/m1/02-prog/part-01.slide),
+  - [m1/02-prog part 02 (Functions)](https://talks.godoc.org/github.com/master-pfa-info/2019/m1/02-prog/part-02.slide),
+  - [m1/02-prog part 03 (Arrays & Slices)](https://talks.godoc.org/github.com/master-pfa-info/2019/m1/02-prog/part-03.slide),
+  - [m1/02-prog part 04 (Control flow)](https://talks.godoc.org/github.com/master-pfa-info/2019/m1/02-prog/part-04.slide),
+  - [m1/02-prog part 05 (Pointers & Structs)](https://talks.godoc.org/github.com/master-pfa-info/2019/m1/02-prog/part-05.slide),
+  - [m1/02-prog part 06 (I/O)](https://talks.godoc.org/github.com/master-pfa-info/2019/m1/02-prog/part-06.slide),
+  - [m1/02-prog part 07 (OOP)](https://talks.godoc.org/github.com/master-pfa-info/2019/m1/02-prog/part-07.slide),
 
-- [m2/01-oop](https://talks.godoc.org/github.com/master-pfa-info/2018/m2/01-oop/part-01.slide)
+- [m2/01-oop](https://talks.godoc.org/github.com/master-pfa-info/2019/m2/01-oop/part-01.slide)
 - m2/02-prog:
-  - [m2/02-conc part 01](https://talks.godoc.org/github.com/master-pfa-info/2018/m2/02-conc/part-01.slide),
-  - [m2/02-conc part 02](https://talks.godoc.org/github.com/master-pfa-info/2018/m2/02-conc/part-02.slide),
-  - [m2/intro-python](https://talks.godoc.org/github.com/master-pfa-info/2018/m2/python-101/intro.slide),
-  - [m2/intro-notebook](https://talks.godoc.org/github.com/master-pfa-info/2018/m2/python-101/notebooks.slide),
+  - [m2/02-conc part 01](https://talks.godoc.org/github.com/master-pfa-info/2019/m2/02-conc/part-01.slide),
+  - [m2/02-conc part 02](https://talks.godoc.org/github.com/master-pfa-info/2019/m2/02-conc/part-02.slide),
+  - [m2/intro-python](https://talks.godoc.org/github.com/master-pfa-info/2019/m2/python-101/intro.slide),
+  - [m2/intro-notebook](https://talks.godoc.org/github.com/master-pfa-info/2019/m2/python-101/notebooks.slide),
 
 Slides are updated after each session.
 

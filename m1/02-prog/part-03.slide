@@ -59,9 +59,9 @@ The program shall print:
  arr[1]= 42
  arr[2]= 12
 
-* Solution
-
-.play _code/arr.go
+## * Solution
+## 
+## .play _code/arr.go
 
 * Slices
 
@@ -129,9 +129,9 @@ The program shall display:
 
 What does happen if you try to access `sli[3]` ?
 
-* Solution
-
-.play _code/sli.go
+## * Solution
+## 
+## .play _code/sli.go
 
 
 * Maps

@@ -154,9 +154,9 @@ Eventually, the program shall display:
   f64= +2.500000e-001
   bool= true / false
 
-* Solution
-
-.play _code/builtins.go
+## * Solution
+## 
+## .play _code/builtins.go
 
 * Variables
 
@@ -235,9 +235,9 @@ Eventually, the program shall display:
  $> go run ./main.go
  a+b= 21
 
-* Solution
-
-.play _code/add.go
+## * Solution
+## 
+## .play _code/add.go
 
 * Resources
 

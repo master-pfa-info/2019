@@ -483,7 +483,7 @@ The `cp` command works very much like `mv`, except it copies a file instead of m
 
 Now that we know a few basic commands, we can finally look at the shells' most powerful features: the ease with which it lets us combine existing programs in new ways.
 We'll start with a directory called `molecules` that contains six files describing some simple organic molecules.
-The `.pdb` extension indicates that these are in Proteing Data Bank format, a simple text format that specifies the type and position of each atom in the molecule.
+The `.pdb` extension indicates that these are in Protein Data Bank format, a simple text format that specifies the type and position of each atom in the molecule.
 
  $> ls molecules
  cubane.pdb  ethane.pdb  methane.pdb  octane.pdb  pentane.pdb  propane.pdb

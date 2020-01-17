@@ -251,6 +251,9 @@ Modify the previous program to plot the `(x,y)` points, using the `mcpi.Plot(x,y
 
 .image _figs/mc-pi.png 600 _
 
+* Solution
+
+.code _code/mc-pi-plot.go /START/,/STOP/
 
 * Resources
 
